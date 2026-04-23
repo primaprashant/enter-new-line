@@ -1,0 +1,48 @@
+{
+  "name": "enter-new-line",
+  "version": "0.1.0",
+  "description": "Browser extension that rebinds Enter to insert a new line and Ctrl/Cmd+Enter to send on LLM chat websites.",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "author": "Prashant Anand",
+  "homepage": "https://github.com/prashant-anand/enter-new-line",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prashant-anand/enter-new-line.git"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:chrome": "cross-env TARGET=chrome vite build",
+    "build:firefox": "cross-env TARGET=firefox vite build",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "fonts:fetch": "node scripts/fetch-fonts.mjs"
+  },
+  "dependencies": {
+    "webextension-polyfill": "^0.12.0"
+  },
+  "devDependencies": {
+    "@crxjs/vite-plugin": "^2.4.0",
+    "@types/chrome": "^0.0.287",
+    "@types/node": "^22.10.2",
+    "@types/webextension-polyfill": "^0.12.1",
+    "@typescript-eslint/eslint-plugin": "^8.18.2",
+    "@typescript-eslint/parser": "^8.18.2",
+    "cross-env": "^7.0.3",
+    "eslint": "^9.17.0",
+    "eslint-config-prettier": "^9.1.0",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.2",
+    "vite": "^5.4.11"
+  }
+}
