@@ -4,3 +4,4 @@ export * from './matching';
 export * from './migration';
 export * from './storage';
 export * from './events';
+export * from './messages';
