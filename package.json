@@ -24,7 +24,8 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "fonts:fetch": "node scripts/fetch-fonts.mjs"
+    "fonts:fetch": "node scripts/fetch-fonts.mjs",
+    "icons:render": "node scripts/render-icons.mjs"
   },
   "dependencies": {
     "webextension-polyfill": "^0.12.0"

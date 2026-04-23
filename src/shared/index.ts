@@ -1,1 +1,1 @@
-export const phase = 1;
+export * from './browser';

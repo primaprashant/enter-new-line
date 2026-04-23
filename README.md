@@ -25,29 +25,34 @@ Requirements: Node 20+.
 ```sh
 npm install
 npm run fonts:fetch   # one-time; downloads EB Garamond, DM Sans, JetBrains Mono .woff2 into public/fonts/
-npm run dev           # Vite scaffold build; Phase 2 wires the extension manifest
+npm run icons:render  # one-time; generates placeholder toolbar icons into public/icons/
+npm run build:chrome  # emits the loadable extension at dist/chrome/
 ```
 
 ### Scripts
 
-| Script                  | Description                      |
-| ----------------------- | -------------------------------- |
-| `npm run dev`           | Vite scaffold build with HMR     |
-| `npm run build`         | Production scaffold build        |
-| `npm run build:chrome`  | Scaffold build to `dist/chrome`  |
-| `npm run build:firefox` | Scaffold build to `dist/firefox` |
-| `npm run typecheck`     | TypeScript check (no emit)       |
-| `npm run lint`          | ESLint                           |
-| `npm run format`        | Prettier (write)                 |
-| `npm run fonts:fetch`   | Re-download bundled font files   |
+| Script                  | Description                                   |
+| ----------------------- | --------------------------------------------- |
+| `npm run dev`           | Vite dev server with HMR (defaults to Chrome) |
+| `npm run build`         | Production build (defaults to Chrome)         |
+| `npm run build:chrome`  | Build to `dist/chrome/`                       |
+| `npm run build:firefox` | Build to `dist/firefox/`                      |
+| `npm run typecheck`     | TypeScript check (no emit)                    |
+| `npm run lint`          | ESLint                                        |
+| `npm run format`        | Prettier (write)                              |
+| `npm run fonts:fetch`   | Re-download bundled font files                |
+| `npm run icons:render`  | Regenerate placeholder toolbar icons          |
 
 ### Loading the extension locally
 
-Phase 2 will introduce the manifest and extension entrypoints. After that lands,
-load the built extension via:
+- **Chrome**: run `npm run build:chrome`, then open `chrome://extensions`,
+  enable Developer mode, and **Load unpacked** pointing to `dist/chrome/`.
+- **Firefox**: run `npm run build:firefox`, open `about:debugging#/runtime/this-firefox`,
+  click **Load Temporary Add-on…**, and select
+  `dist/firefox/manifest.json`.
 
-- **Chrome**: `chrome://extensions` → Developer mode → Load unpacked
-- **Firefox**: `about:debugging` → This Firefox → Load Temporary Add-on
+After loading, open the devtools console on a supported site (`chatgpt.com`,
+`claude.ai`, etc.) to confirm the content script attached.
 
 ## Project layout
 
@@ -64,6 +69,7 @@ src/
 public/
   icons/        # Extension icons (active/inactive, 16/32/48/128)
   fonts/        # Locally bundled .woff2 files (CSP-safe)
+scripts/        # Build-time tooling (font fetcher, icon renderer)
 ```
 
 ## License

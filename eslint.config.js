@@ -32,5 +32,12 @@ export default tseslint.config(
       eqeqeq: ['error', 'always'],
     },
   },
+  {
+    // Build tooling legitimately reports progress to stdout.
+    files: ['scripts/**/*.{js,mjs,cjs,ts}'],
+    rules: {
+      'no-console': 'off',
+    },
+  },
   prettier,
 );
