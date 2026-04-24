@@ -4,21 +4,55 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Welcome to EnterNewLine</title>
-    <style>
-      html,
-      body {
-        margin: 0;
-        padding: 32px;
-        max-width: 640px;
-        font:
-          18px system-ui,
-          sans-serif;
-      }
-    </style>
+    <link rel="stylesheet" href="./welcome.css" />
   </head>
   <body>
-    <h1>Welcome to EnterNewLine</h1>
-    <p>Phase 2 scaffold. The real welcome page lands in phase 9.</p>
+    <main class="welcome">
+      <header class="welcome__hero welcome__fade welcome__fade--1">
+        <span class="welcome__eyebrow">EnterNewLine</span>
+        <h1 class="welcome__title">Enter is for writing now.</h1>
+        <p class="welcome__sub">
+          Press <span class="kbd">Enter</span> for a new line. Press
+          <span id="send-kbd" class="kbd">Cmd + Enter</span> to send. That's the whole extension.
+        </p>
+      </header>
+
+      <section class="welcome__card welcome__fade welcome__fade--2" aria-labelledby="keys-title">
+        <h2 id="keys-title" class="welcome__card-title">Key bindings</h2>
+        <div class="welcome__binding">
+          <span class="welcome__binding-label">New line</span>
+          <span class="welcome__binding-keys">
+            <span class="kbd">Enter</span>
+          </span>
+        </div>
+        <div class="welcome__binding">
+          <span class="welcome__binding-label">Send message</span>
+          <span id="send-binding" class="welcome__binding-keys">
+            <span class="kbd">Cmd</span>
+            <span aria-hidden="true">+</span>
+            <span class="kbd">Enter</span>
+          </span>
+        </div>
+        <div class="welcome__binding">
+          <span class="welcome__binding-label">Native behavior</span>
+          <span class="welcome__binding-keys">
+            <span class="kbd">Shift</span>
+            <span aria-hidden="true">+</span>
+            <span class="kbd">Enter</span>
+          </span>
+        </div>
+      </section>
+
+      <section class="welcome__fade welcome__fade--3" aria-labelledby="sites-title">
+        <h2 id="sites-title" class="welcome__section-title">Enabled out of the box</h2>
+        <ul id="welcome-sites" class="welcome__sites"></ul>
+      </section>
+
+      <section class="welcome__cta welcome__fade welcome__fade--4">
+        <p class="welcome__footnote">You can add or remove sites any time from settings.</p>
+        <button id="open-settings" class="btn btn--secondary" type="button">Open settings →</button>
+      </section>
+    </main>
     <script type="module" src="./index.ts"></script>
   </body>
 </html>

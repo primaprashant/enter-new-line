@@ -1,7 +1,8 @@
 /** Per-tab browser-action icon and title based on extension readiness. */
 
 import { action, tabs } from '@shared/browser';
-import { canonicalHost, resolveSite } from '@shared/matching';
+import { canonicalHost } from '@shared/matching';
+import { isReadyOn } from '@shared/siteStatus';
 import { getState } from '@shared/storage';
 import type { StoredState } from '@shared/schema';
 
@@ -28,17 +29,6 @@ function hostFromUrl(url: string | undefined): string {
   } catch {
     return '';
   }
-}
-
-/** True when the content script should be running and ready on `pageHost`. */
-export function isReadyOn(pageHost: string, state: StoredState): boolean {
-  if (!pageHost) return false;
-  const site = resolveSite(pageHost, state);
-  if (!site) return false;
-  if (!site.enabled) return false;
-  // Defaults are covered by static manifest matches; customs need a granted host permission.
-  if (site.kind === 'custom' && !state.grantedCustomHosts.includes(site.host)) return false;
-  return true;
 }
 
 export async function updateIconForTab(

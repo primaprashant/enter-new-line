@@ -4,21 +4,79 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>EnterNewLine — Settings</title>
-    <style>
-      html,
-      body {
-        margin: 0;
-        padding: 24px;
-        max-width: 720px;
-        font:
-          15px system-ui,
-          sans-serif;
-      }
-    </style>
+    <link rel="stylesheet" href="./options.css" />
   </head>
   <body>
-    <h1>EnterNewLine settings</h1>
-    <p>Phase 2 scaffold. The real settings page lands in phase 8.</p>
+    <main class="page">
+      <header class="page__head">
+        <h1 class="page__title">EnterNewLine</h1>
+        <p class="page__subtitle">Enter inserts a new line. Cmd + Enter sends.</p>
+      </header>
+
+      <section class="section" aria-labelledby="default-heading">
+        <h2 id="default-heading" class="section__title">Default sites</h2>
+        <ul id="default-sites" class="list"></ul>
+      </section>
+
+      <section class="section" aria-labelledby="custom-heading">
+        <h2 id="custom-heading" class="section__title">Custom sites</h2>
+        <ul id="custom-sites" class="list"></ul>
+      </section>
+
+      <section class="section" aria-labelledby="add-heading">
+        <h2 id="add-heading" class="section__title">Add a site</h2>
+        <form id="add-form" class="form" autocomplete="off">
+          <label for="add-input" class="sr-only">Domain</label>
+          <input
+            id="add-input"
+            class="input"
+            type="text"
+            placeholder="grok.com"
+            spellcheck="false"
+            autocapitalize="off"
+            inputmode="url"
+            required
+          />
+          <button id="add-submit" class="btn btn--primary" type="submit">Add site</button>
+        </form>
+        <p id="add-status" class="form__status" aria-live="polite"></p>
+      </section>
+
+      <section class="section" aria-labelledby="io-heading">
+        <h2 id="io-heading" class="section__title">Import / Export</h2>
+        <p class="section__hint">
+          Back up your settings to a file, or move them to another browser.
+        </p>
+        <div class="actions">
+          <button id="export-btn" class="btn btn--secondary" type="button">Export settings</button>
+          <button id="import-btn" class="btn btn--secondary" type="button">Import settings…</button>
+          <input
+            id="import-file"
+            type="file"
+            accept="application/json,.json"
+            hidden
+            aria-hidden="true"
+          />
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="changelog-heading">
+        <h2 id="changelog-heading" class="section__title">Changelog</h2>
+        <div id="changelog"></div>
+        <p class="changelog__footer">
+          <a
+            class="link"
+            href="https://github.com/prashant-anand/enter-new-line/blob/main/CHANGELOG.md"
+            target="_blank"
+            rel="noopener"
+            >Full changelog →</a
+          >
+        </p>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
     <script type="module" src="./index.ts"></script>
   </body>
 </html>

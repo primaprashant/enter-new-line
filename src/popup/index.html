@@ -4,20 +4,66 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>EnterNewLine</title>
-    <style>
-      html,
-      body {
-        margin: 0;
-        padding: 16px;
-        width: 340px;
-        font:
-          13px system-ui,
-          sans-serif;
-      }
-    </style>
+    <link rel="stylesheet" href="./popup.css" />
   </head>
   <body>
-    <p>EnterNewLine popup — Phase 2 scaffold.</p>
+    <main class="popup">
+      <header class="popup__masthead">
+        <span class="popup__wordmark">EnterNewLine</span>
+        <span id="state-dot" class="state-dot state-dot--inactive" aria-hidden="true"></span>
+        <span id="state-label" class="sr-only" aria-live="polite">Inactive</span>
+      </header>
+
+      <section class="popup__site">
+        <div class="popup__site-copy">
+          <span class="popup__eyebrow">On this site</span>
+          <span id="site-domain" class="popup__domain">—</span>
+          <span id="site-status" class="popup__status" aria-live="polite">Checking…</span>
+        </div>
+        <button
+          id="site-toggle"
+          class="toggle"
+          type="button"
+          role="switch"
+          aria-checked="false"
+          aria-label="Toggle extension on this site"
+          disabled
+        >
+          <span class="toggle__thumb" aria-hidden="true"></span>
+        </button>
+      </section>
+
+      <section class="popup__stats" aria-label="Usage counters">
+        <div class="popup__col">
+          <span class="popup__col-head">This site</span>
+          <div class="stat">
+            <span id="site-newlines" class="stat__value">0</span>
+            <span class="stat__label">Newlines</span>
+          </div>
+          <div class="stat">
+            <span id="site-sends" class="stat__value">0</span>
+            <span class="stat__label">Sent</span>
+          </div>
+        </div>
+        <div class="popup__col">
+          <span class="popup__col-head">Global</span>
+          <div class="stat">
+            <span id="global-newlines" class="stat__value">0</span>
+            <span class="stat__label">Newlines</span>
+          </div>
+          <div class="stat">
+            <span id="global-sends" class="stat__value">0</span>
+            <span class="stat__label">Sent</span>
+          </div>
+        </div>
+      </section>
+
+      <footer class="popup__footer">
+        <button id="open-settings" class="btn btn--ghost btn--compact" type="button">
+          All settings →
+        </button>
+      </footer>
+    </main>
     <script type="module" src="./index.ts"></script>
   </body>
 </html>
