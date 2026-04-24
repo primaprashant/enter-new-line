@@ -72,14 +72,12 @@ function isInSearchContext(el: Element): boolean {
 const CHATGPT: SiteRule = {
   host: 'chatgpt.com',
   shouldHandle(target) {
-    return (target instanceof HTMLElement && target.id === 'prompt-textarea') || isTextarea(target);
+    return target instanceof HTMLElement && target.id === 'prompt-textarea';
   },
   onEnter(event) {
-    // Only rewrite Enter on the composer; edit-mode textareas pass through.
-    if (event.target instanceof HTMLElement && event.target.id === 'prompt-textarea') {
-      event.preventDefault();
-      dispatchEnter(event.target, { shiftKey: true });
-    }
+    if (!(event.target instanceof HTMLElement)) return;
+    event.preventDefault();
+    dispatchEnter(event.target, { shiftKey: true });
   },
   onSend(event) {
     if (!event.target) return;

@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Test suite: Vitest + jsdom with 118 tests across 13 files. Covers shared
+  modules (matching, migration, storage, events, custom sites, site status),
+  the stats batcher (fake timers), key-routing logic, per-site rules
+  (newline insertion + per-input-type quirks), import/export, the changelog
+  parser, and full DOM tests for popup and options interactions. Includes a
+  shared `webextension-polyfill` fake under `tests/fakeBrowser.ts` and a
+  `tests/setup.ts` that polyfills the slice of jsdom APIs (`isContentEditable`,
+  `URL.createObjectURL`, `Blob.prototype.text`) we depend on.
+- `.docs/smoke-checklist.md` — manual cross-browser load-unpacked verification
+  steps for Chrome and Firefox, run before tagging a release.
+- `npm test` (`vitest run`) and `npm run test:watch` scripts.
 - Popup UI (340px): masthead with wordmark and state dot, current-site row
   with pill toggle, two-column stats (this site / global), and an
   "All settings →" ghost link. Live-updates as the background flushes stats.
