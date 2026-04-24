@@ -51,6 +51,14 @@ const COMMON = {
       resources: ['src/welcome/index.html'],
       matches: ['<all_urls>'],
     },
+    // Content script is dynamically registered on custom sites (see `src/background/scripts.ts`).
+    // The crxjs loader it relies on does runtime `import()` of shared chunks; those fetches happen
+    // from the custom page's origin and require a WAR entry. crxjs auto-emits one restricted to
+    // default-site matches, so we broaden coverage here.
+    {
+      resources: ['assets/*.js'],
+      matches: ['<all_urls>'],
+    },
   ],
 };
 

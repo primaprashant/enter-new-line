@@ -10,6 +10,9 @@ import { attachKeyHandler } from './keyHandler';
 
 const pageHost = canonicalHost(location.hostname);
 const rule = resolveRule(pageHost);
+const globalState = globalThis as typeof globalThis & {
+  __enterNewLineAttached?: boolean;
+};
 
 let detach: (() => void) | null = null;
 
@@ -30,12 +33,16 @@ function sync(state: StoredState): void {
   }
 }
 
-void getState()
-  .then(sync)
-  .catch((err: unknown) => {
-    console.warn('[EnterNewLine] initial state load failed:', err);
-  });
+if (!globalState.__enterNewLineAttached) {
+  globalState.__enterNewLineAttached = true;
 
-onStateChange((next) => {
-  sync(next);
-});
+  void getState()
+    .then(sync)
+    .catch((err: unknown) => {
+      console.warn('[EnterNewLine] initial state load failed:', err);
+    });
+
+  onStateChange((next) => {
+    sync(next);
+  });
+}
