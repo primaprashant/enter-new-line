@@ -37,6 +37,7 @@ const COMMON = {
     open_in_tab: true,
   },
   permissions: ['storage', 'scripting'],
+  host_permissions: [...DEFAULT_CONTENT_SCRIPT_MATCHES],
   optional_host_permissions: ['*://*/*'],
   content_scripts: [
     {
