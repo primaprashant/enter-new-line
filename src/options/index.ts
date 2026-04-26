@@ -5,10 +5,7 @@ import { canonicalHost, isValidHost } from '@shared/matching';
 import { type CustomSite, type StoredState } from '@shared/schema';
 import { getState, updateState } from '@shared/storage';
 
-import { loadChangelog, renderBullet, type ChangelogEntry, type ChangelogGroup } from './changelog';
 import { applyImport, exportToFile, parseImportText, type ImportResult } from './importExport';
-
-const CHANGELOG_LIMIT = 3;
 
 function $<T extends Element>(id: string): T {
   const el = document.getElementById(id);
@@ -121,56 +118,6 @@ function renderCustoms(state: StoredState): void {
       }),
     ),
   );
-}
-
-function renderChangelog(entries: readonly ChangelogEntry[]): void {
-  const container = $<HTMLDivElement>('changelog');
-  container.replaceChildren();
-
-  const limited = entries.slice(0, CHANGELOG_LIMIT);
-  if (limited.length === 0) {
-    const empty = document.createElement('p');
-    empty.className = 'empty';
-    empty.textContent = 'No releases yet.';
-    container.append(empty);
-    return;
-  }
-
-  for (const entry of limited) {
-    const section = document.createElement('article');
-    section.className = 'changelog__entry';
-
-    const title = document.createElement('h3');
-    title.className = 'changelog__title';
-    title.textContent = entry.title;
-    section.append(title);
-
-    for (const group of entry.groups) {
-      if (group.items.length === 0) continue;
-      appendGroup(section, group);
-    }
-
-    container.append(section);
-  }
-}
-
-function appendGroup(section: HTMLElement, group: ChangelogGroup): void {
-  if (group.kind) {
-    const heading = document.createElement('h4');
-    heading.className = 'changelog__group';
-    heading.textContent = group.kind;
-    section.append(heading);
-  }
-
-  const list = document.createElement('ul');
-  list.className = 'changelog__list';
-  for (const item of group.items) {
-    const li = document.createElement('li');
-    li.className = 'changelog__item';
-    li.innerHTML = renderBullet(item);
-    list.append(li);
-  }
-  section.append(list);
 }
 
 let toastTimer: ReturnType<typeof setTimeout> | null = null;
@@ -298,7 +245,6 @@ async function render(state?: StoredState): Promise<void> {
 }
 
 async function boot(): Promise<void> {
-  renderChangelog(loadChangelog());
   attachAddForm();
   attachExport();
   attachImport();
