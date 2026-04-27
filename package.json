@@ -6,10 +6,10 @@
   "type": "module",
   "license": "MIT",
   "author": "Prashant Anand",
-  "homepage": "https://github.com/prashant-anand/enter-new-line",
+  "homepage": "https://github.com/primaprashant/enter-new-line",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/prashant-anand/enter-new-line.git"
+    "url": "git+https://github.com/primaprashant/enter-new-line.git"
   },
   "engines": {
     "node": ">=20"
@@ -27,7 +27,10 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "fonts:fetch": "node scripts/fetch-fonts.mjs",
-    "icons:render": "node scripts/render-icons.mjs"
+    "icons:render": "node scripts/render-icons.mjs",
+    "package:chrome": "npm run build:chrome && node scripts/package.mjs chrome",
+    "package:firefox": "npm run build:firefox && node scripts/package.mjs firefox",
+    "package": "npm run package:chrome && npm run package:firefox"
   },
   "dependencies": {
     "webextension-polyfill": "^0.12.0"

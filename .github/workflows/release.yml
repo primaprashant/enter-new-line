@@ -1,0 +1,43 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+
+      - name: Verify package.json version matches tag
+        run: |
+          pkg_version="$(node -p "require('./package.json').version")"
+          tag_version="${GITHUB_REF_NAME#v}"
+          if [ "$pkg_version" != "$tag_version" ]; then
+            echo "::error::package.json version ($pkg_version) does not match tag ($tag_version)"
+            exit 1
+          fi
+
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+
+      - run: npm run package:chrome
+      - run: npm run package:firefox
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/*
+          fail_on_unmatched_files: true
+          generate_release_notes: true
