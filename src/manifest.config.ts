@@ -21,7 +21,7 @@ const ICONS = {
 
 const COMMON = {
   manifest_version: 3 as const,
-  name: 'EnterNewLine',
+  name: 'EnterNewLine — Bind Enter to New Line in ChatGPT, Claude, Gemini',
   short_name: 'EnterNewLine',
   description:
     'Stop accidentally sending half-finished prompts. Enter inserts a new line, Cmd+Enter sends. Works on ChatGPT, Claude, Gemini & more.',
