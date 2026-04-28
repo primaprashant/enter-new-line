@@ -1,6 +1,6 @@
 {
   "name": "enter-new-line",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Stop accidentally sending half-finished prompts. Enter inserts a new line, Cmd+Enter sends. Browser extension that works on ChatGPT, Claude, Gemini & more.",
   "private": true,
   "type": "module",
