@@ -21,11 +21,11 @@ If you write long prompts, you've hit the bug: you reach for a paragraph break a
 
 ## How it works
 
-| Keypress                              | Behavior                |
-| ------------------------------------- | ----------------------- |
-| `Enter`                               | Insert a new line       |
-| `Cmd + Enter` / `Ctrl + Enter`        | Send the message        |
-| `Shift + Enter`                       | Unchanged (site default)|
+| Keypress                       | Behavior                 |
+| ------------------------------ | ------------------------ |
+| `Enter`                        | Insert a new line        |
+| `Cmd + Enter` / `Ctrl + Enter` | Send the message         |
+| `Shift + Enter`                | Unchanged (site default) |
 
 Only the primary chat input is intercepted (textarea, contenteditable, ProseMirror). Search bars, chat-rename fields, and other inputs are untouched. Paste behavior is unaffected.
 
@@ -66,13 +66,13 @@ npm run build:firefox  # → dist/firefox/
 
 ### Common scripts
 
-| Script                    | Description                                |
-| ------------------------- | ------------------------------------------ |
-| `npm run dev`             | Vite dev server with HMR (Chrome target)   |
-| `npm run typecheck`       | TypeScript, no emit                        |
-| `npm run lint`            | ESLint                                     |
-| `npm run test`            | Vitest                                     |
-| `npm run package`         | Build and zip Chrome `.zip` + Firefox `.xpi` into `release/` |
+| Script              | Description                                                  |
+| ------------------- | ------------------------------------------------------------ |
+| `npm run dev`       | Vite dev server with HMR (Chrome target)                     |
+| `npm run typecheck` | TypeScript, no emit                                          |
+| `npm run lint`      | ESLint                                                       |
+| `npm run test`      | Vitest                                                       |
+| `npm run package`   | Build and zip Chrome `.zip` + Firefox `.xpi` into `release/` |
 
 ### Project layout
 

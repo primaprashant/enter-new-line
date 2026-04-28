@@ -103,9 +103,7 @@ describe('popup boot — unsupported hosts and pages', () => {
       expect(document.getElementById('site-domain')?.textContent).toBe('example.com');
     });
 
-    expect(document.getElementById('site-status')?.textContent).toBe(
-      'Not available on this site',
-    );
+    expect(document.getElementById('site-status')?.textContent).toBe('Not available on this site');
     expect((document.getElementById('site-toggle') as HTMLButtonElement).disabled).toBe(true);
   });
 
