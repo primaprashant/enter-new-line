@@ -16,6 +16,18 @@ function $<T extends Element>(id: string): T {
   return el as unknown as T;
 }
 
+function isMacPlatform(): boolean {
+  if (typeof navigator === 'undefined') return false;
+  const platform = navigator.platform ?? '';
+  if (/Mac|iPhone|iPad/i.test(platform)) return true;
+  return /Macintosh/i.test(navigator.userAgent ?? '');
+}
+
+function paintSendKey(): void {
+  if (isMacPlatform()) return;
+  $<HTMLSpanElement>('send-key').textContent = 'Ctrl + Enter';
+}
+
 async function activeTabContext(): Promise<TabContext> {
   const [tab] = await tabs.query({ active: true, currentWindow: true });
   const url = tab?.url;
@@ -114,6 +126,7 @@ async function render(ctx: TabContext, state?: StoredState): Promise<void> {
 }
 
 async function boot(): Promise<void> {
+  paintSendKey();
   const ctx = await activeTabContext();
   await render(ctx);
 

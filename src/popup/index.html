@@ -33,27 +33,38 @@
         </button>
       </section>
 
-      <section class="popup__stats" aria-label="Usage counters">
-        <div class="popup__col">
-          <span class="popup__col-head">This site</span>
-          <div class="stat">
-            <span id="site-newlines" class="stat__value">0</span>
-            <span class="stat__label">Newlines</span>
-          </div>
-          <div class="stat">
-            <span id="site-sends" class="stat__value">0</span>
-            <span class="stat__label">Sent</span>
+      <section class="popup__stats" aria-label="Usage">
+        <span class="popup__eyebrow">Activity</span>
+
+        <div class="metric">
+          <span class="metric__label">
+            New lines added with <span class="kbd">Enter</span>
+          </span>
+          <div class="metric__row">
+            <div class="metric__cell">
+              <span id="site-newlines" class="stat__value">0</span>
+              <span class="metric__scope">this site</span>
+            </div>
+            <div class="metric__cell">
+              <span id="global-newlines" class="stat__value">0</span>
+              <span class="metric__scope">all sites</span>
+            </div>
           </div>
         </div>
-        <div class="popup__col">
-          <span class="popup__col-head">Global</span>
-          <div class="stat">
-            <span id="global-newlines" class="stat__value">0</span>
-            <span class="stat__label">Newlines</span>
-          </div>
-          <div class="stat">
-            <span id="global-sends" class="stat__value">0</span>
-            <span class="stat__label">Sent</span>
+
+        <div class="metric">
+          <span class="metric__label">
+            Messages sent with <span id="send-key" class="kbd">Cmd + Enter</span>
+          </span>
+          <div class="metric__row">
+            <div class="metric__cell">
+              <span id="site-sends" class="stat__value">0</span>
+              <span class="metric__scope">this site</span>
+            </div>
+            <div class="metric__cell">
+              <span id="global-sends" class="stat__value">0</span>
+              <span class="metric__scope">all sites</span>
+            </div>
           </div>
         </div>
       </section>
