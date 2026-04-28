@@ -22,6 +22,13 @@ body {
   gap: var(--space-2);
 }
 
+.popup__mark {
+  width: 28px;
+  height: 28px;
+  display: block;
+  flex-shrink: 0;
+}
+
 .popup__wordmark {
   font-family: var(--font-serif);
   font-size: 18px;

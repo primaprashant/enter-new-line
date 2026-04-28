@@ -27,6 +27,13 @@ body {
   gap: var(--space-5);
 }
 
+.welcome__mark {
+  width: 32px;
+  height: 32px;
+  display: block;
+  margin-bottom: calc(var(--space-5) * -1 + var(--space-2));
+}
+
 .welcome__eyebrow {
   font-family: var(--font-sans);
   font-size: 12px;
