@@ -70,7 +70,7 @@ function paintSiteRow(ctx: TabContext, site: ResolvedSite | null, state: StoredS
   if (!ctx.supported) {
     domain.textContent = 'This page';
     domain.removeAttribute('title');
-    status.textContent = 'Extension is unavailable here';
+    status.textContent = 'Not available on this site';
     toggle.setAttribute('aria-checked', 'false');
     toggle.disabled = true;
     toggle.setAttribute('aria-label', 'Toggle unavailable on this page');
@@ -82,7 +82,7 @@ function paintSiteRow(ctx: TabContext, site: ResolvedSite | null, state: StoredS
   if (!site) {
     domain.textContent = ctx.host || 'This page';
     domain.title = ctx.host;
-    status.textContent = 'Unsupported site';
+    status.textContent = 'Not available on this site';
     toggle.setAttribute('aria-checked', 'false');
     toggle.disabled = true;
     toggle.setAttribute('aria-label', `Toggle unavailable on ${ctx.host}`);

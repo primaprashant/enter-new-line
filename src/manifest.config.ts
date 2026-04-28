@@ -24,7 +24,7 @@ const COMMON = {
   name: 'EnterNewLine',
   short_name: 'EnterNewLine',
   description:
-    'Enter inserts a new line. Ctrl/Cmd+Enter sends. Works on ChatGPT, Claude, Gemini, Perplexity, and NotebookLM.',
+    'Stop accidentally sending half-finished prompts. Enter inserts a new line, Cmd+Enter sends. Works on ChatGPT, Claude, Gemini & more.',
   version: pkg.version,
   icons: ICONS,
   action: {

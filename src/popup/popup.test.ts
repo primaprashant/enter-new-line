@@ -103,7 +103,9 @@ describe('popup boot — unsupported hosts and pages', () => {
       expect(document.getElementById('site-domain')?.textContent).toBe('example.com');
     });
 
-    expect(document.getElementById('site-status')?.textContent).toBe('Unsupported site');
+    expect(document.getElementById('site-status')?.textContent).toBe(
+      'Not available on this site',
+    );
     expect((document.getElementById('site-toggle') as HTMLButtonElement).disabled).toBe(true);
   });
 
@@ -119,7 +121,7 @@ describe('popup boot — unsupported hosts and pages', () => {
     await bootPopup();
     await vi.waitFor(() => {
       expect(document.getElementById('site-status')?.textContent).toBe(
-        'Extension is unavailable here',
+        'Not available on this site',
       );
     });
     expect((document.getElementById('site-toggle') as HTMLButtonElement).disabled).toBe(true);

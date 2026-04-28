@@ -1,7 +1,7 @@
 {
   "name": "enter-new-line",
   "version": "0.1.0",
-  "description": "Browser extension that rebinds Enter to insert a new line and Ctrl/Cmd+Enter to send on LLM chat websites.",
+  "description": "Stop accidentally sending half-finished prompts. Enter inserts a new line, Cmd+Enter sends. Browser extension that works on ChatGPT, Claude, Gemini & more.",
   "private": true,
   "type": "module",
   "license": "MIT",
