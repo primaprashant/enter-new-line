@@ -1,5 +1,4 @@
 import { runtime, tabs } from '@shared/browser';
-import { setCustomSiteEnabled } from '@shared/customSites';
 import { onStateChange } from '@shared/events';
 import { canonicalHost, resolveSite, type ResolvedSite } from '@shared/matching';
 import { emptySiteStats, type SiteStats, type StoredState } from '@shared/schema';
@@ -71,7 +70,7 @@ function paintSiteRow(ctx: TabContext, site: ResolvedSite | null, state: StoredS
   if (!site) {
     domain.textContent = ctx.host || 'This page';
     domain.title = ctx.host;
-    status.textContent = 'Not on your list — add it in settings';
+    status.textContent = 'Unsupported site';
     toggle.setAttribute('aria-checked', 'false');
     toggle.disabled = true;
     toggle.setAttribute('aria-label', `Toggle unavailable on ${ctx.host}`);
@@ -83,11 +82,7 @@ function paintSiteRow(ctx: TabContext, site: ResolvedSite | null, state: StoredS
   const ready = isReadyOn(ctx.host, state);
   domain.textContent = site.host;
   domain.title = site.host;
-  status.textContent = site.enabled
-    ? ready
-      ? `Active on ${site.host}`
-      : 'Waiting for permission'
-    : `Paused on ${site.host}`;
+  status.textContent = site.enabled ? `Active on ${site.host}` : `Paused on ${site.host}`;
   toggle.setAttribute('aria-checked', site.enabled ? 'true' : 'false');
   toggle.disabled = false;
   toggle.setAttribute(
@@ -103,16 +98,12 @@ async function toggleCurrentSite(ctx: TabContext): Promise<void> {
   const site = ctx.host ? resolveSite(ctx.host, state) : null;
   if (!site) return;
 
-  if (site.kind === 'default') {
-    await updateState((s) => {
-      const disabled = new Set(s.disabledDefaults);
-      if (site.enabled) disabled.add(site.id);
-      else disabled.delete(site.id);
-      return { ...s, disabledDefaults: [...disabled] };
-    });
-  } else {
-    await setCustomSiteEnabled(site.host, !site.enabled);
-  }
+  await updateState((s) => {
+    const disabled = new Set(s.disabledDefaults);
+    if (site.enabled) disabled.add(site.id);
+    else disabled.delete(site.id);
+    return { ...s, disabledDefaults: [...disabled] };
+  });
 }
 
 async function render(ctx: TabContext, state?: StoredState): Promise<void> {

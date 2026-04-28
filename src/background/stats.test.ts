@@ -83,8 +83,6 @@ describe('installStatsListener', () => {
     await setState({
       schemaVersion: 1,
       disabledDefaults: [],
-      customSites: [],
-      grantedCustomHosts: [],
       stats: {
         global: { newlines: 10, sends: 5 },
         perHost: { 'chatgpt.com': { newlines: 7, sends: 3 } },

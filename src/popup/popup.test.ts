@@ -20,8 +20,6 @@ function emptyState(overrides: Partial<StoredState> = {}): StoredState {
   return {
     schemaVersion: 1,
     disabledDefaults: [],
-    customSites: [],
-    grantedCustomHosts: [],
     stats: { global: { newlines: 0, sends: 0 }, perHost: {} },
     ...overrides,
   };
@@ -90,65 +88,8 @@ describe('popup boot — supported default site', () => {
   });
 });
 
-describe('popup boot — custom site', () => {
-  it('toggling a custom site flips the customSites entry', async () => {
-    pushTab({
-      id: 1,
-      url: 'https://grok.com/chat',
-      active: true,
-      windowId: 1,
-    });
-    await setState(
-      emptyState({
-        customSites: [{ host: 'grok.com', enabled: true, addedAt: 100 }],
-        grantedCustomHosts: ['grok.com'],
-      }),
-    );
-
-    await bootPopup();
-    const toggle = document.getElementById('site-toggle') as HTMLButtonElement;
-    await vi.waitFor(() => {
-      expect(document.getElementById('site-domain')?.textContent).toBe('grok.com');
-      expect(toggle.disabled).toBe(false);
-    });
-
-    expect(toggle.getAttribute('aria-checked')).toBe('true');
-    toggle.click();
-
-    await vi.waitFor(() => {
-      expect(toggle.getAttribute('aria-checked')).toBe('false');
-    });
-    expect(document.getElementById('site-status')?.textContent).toBe('Paused on grok.com');
-  });
-
-  it('reports waiting-for-permission when a custom site has no host grant', async () => {
-    pushTab({
-      id: 1,
-      url: 'https://grok.com/',
-      active: true,
-      windowId: 1,
-    });
-    await setState(
-      emptyState({
-        customSites: [{ host: 'grok.com', enabled: true, addedAt: 1 }],
-        grantedCustomHosts: [],
-      }),
-    );
-
-    await bootPopup();
-    await vi.waitFor(() => {
-      expect(document.getElementById('site-domain')?.textContent).toBe('grok.com');
-    });
-
-    expect(document.getElementById('site-status')?.textContent).toBe('Waiting for permission');
-    expect(document.getElementById('state-dot')?.classList.contains('state-dot--inactive')).toBe(
-      true,
-    );
-  });
-});
-
-describe('popup boot — unlisted host and unsupported pages', () => {
-  it('disables the toggle and explains for an unlisted http host', async () => {
+describe('popup boot — unsupported hosts and pages', () => {
+  it('disables the toggle and explains for an unsupported http host', async () => {
     pushTab({
       id: 1,
       url: 'https://example.com/',
@@ -162,9 +103,7 @@ describe('popup boot — unlisted host and unsupported pages', () => {
       expect(document.getElementById('site-domain')?.textContent).toBe('example.com');
     });
 
-    expect(document.getElementById('site-status')?.textContent).toBe(
-      'Not on your list — add it in settings',
-    );
+    expect(document.getElementById('site-status')?.textContent).toBe('Unsupported site');
     expect((document.getElementById('site-toggle') as HTMLButtonElement).disabled).toBe(true);
   });
 

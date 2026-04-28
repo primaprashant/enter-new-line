@@ -1,8 +1,6 @@
 import { DEFAULT_SITES, type DefaultSite } from '@config/defaultSites';
-import { addCustomSite, removeCustomSite, setCustomSiteEnabled } from '@shared/customSites';
 import { onStateChange } from '@shared/events';
-import { canonicalHost, isValidHost } from '@shared/matching';
-import { type CustomSite, type StoredState } from '@shared/schema';
+import { type StoredState } from '@shared/schema';
 import { getState, updateState } from '@shared/storage';
 
 import { applyImport, exportToFile, parseImportText, type ImportResult } from './importExport';
@@ -18,7 +16,6 @@ function siteRow(opts: {
   host: string;
   enabled: boolean;
   onToggle: () => void;
-  onRemove?: () => void;
 }): HTMLLIElement {
   const li = document.createElement('li');
   li.className = 'site';
@@ -39,15 +36,6 @@ function siteRow(opts: {
 
   const actions = document.createElement('div');
   actions.className = 'site__actions';
-
-  if (opts.onRemove) {
-    const remove = document.createElement('button');
-    remove.type = 'button';
-    remove.className = 'btn btn--destructive btn--compact';
-    remove.textContent = 'Remove';
-    remove.addEventListener('click', opts.onRemove);
-    actions.append(remove);
-  }
 
   const toggle = document.createElement('button');
   toggle.type = 'button';
@@ -90,36 +78,6 @@ function renderDefaults(state: StoredState): void {
   );
 }
 
-function renderCustoms(state: StoredState): void {
-  const list = $<HTMLUListElement>('custom-sites');
-  if (state.customSites.length === 0) {
-    list.replaceChildren();
-    const empty = document.createElement('li');
-    empty.className = 'empty';
-    empty.textContent = 'No custom sites yet. Add one below.';
-    list.append(empty);
-    return;
-  }
-
-  const sorted = [...state.customSites].sort((a, b) => a.addedAt - b.addedAt);
-  list.replaceChildren(
-    ...sorted.map((site: CustomSite) =>
-      siteRow({
-        label: site.host,
-        host: site.host,
-        enabled: site.enabled,
-        onToggle: () => {
-          void setCustomSiteEnabled(site.host, !site.enabled);
-        },
-        onRemove: () => {
-          if (!window.confirm(`Remove ${site.host} from your list?`)) return;
-          void removeCustomSite(site.host).then(() => showToast(`Removed ${site.host}.`));
-        },
-      }),
-    ),
-  );
-}
-
 let toastTimer: ReturnType<typeof setTimeout> | null = null;
 
 function showToast(message: string, kind: 'ok' | 'error' = 'ok'): void {
@@ -133,58 +91,6 @@ function showToast(message: string, kind: 'ok' | 'error' = 'ok'): void {
   toastTimer = setTimeout(() => {
     toast.classList.remove('toast--visible');
   }, 3000);
-}
-
-function attachAddForm(): void {
-  const form = $<HTMLFormElement>('add-form');
-  const input = $<HTMLInputElement>('add-input');
-  const status = $<HTMLParagraphElement>('add-status');
-  const submit = $<HTMLButtonElement>('add-submit');
-
-  function setStatus(text: string, kind: 'ok' | 'error' | ''): void {
-    status.textContent = text;
-    status.classList.toggle('form__status--error', kind === 'error');
-    status.classList.toggle('form__status--ok', kind === 'ok');
-  }
-
-  input.addEventListener('input', () => setStatus('', ''));
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const host = canonicalHost(input.value);
-    if (!host || !isValidHost(host)) {
-      setStatus('Enter a valid domain, like grok.com.', 'error');
-      return;
-    }
-
-    submit.disabled = true;
-    setStatus('Requesting permission…', '');
-
-    void addCustomSite(host)
-      .then((result) => {
-        if (result.status === 'ok') {
-          input.value = '';
-          setStatus(`Added ${result.host}.`, 'ok');
-          showToast(`Added ${result.host}.`);
-        } else if (result.status === 'duplicate') {
-          setStatus(`${result.host} is already on your list.`, 'error');
-        } else if (result.status === 'denied') {
-          setStatus(
-            `Permission for ${result.host} was not granted. Click Add again to retry.`,
-            'error',
-          );
-        } else {
-          setStatus('Enter a valid domain, like grok.com.', 'error');
-        }
-      })
-      .catch((err: unknown) => {
-        console.error('[EnterNewLine] add-site failed:', err);
-        setStatus('Something went wrong. Try again.', 'error');
-      })
-      .finally(() => {
-        submit.disabled = false;
-      });
-  });
 }
 
 function attachExport(): void {
@@ -228,24 +134,16 @@ function attachImport(): void {
 }
 
 function importSummary(result: ImportResult): string {
-  if (result.customSites === 0) return 'Imported settings.';
-  if (result.deniedHosts === 0)
-    return `Imported ${result.customSites} custom site${plural(result.customSites)}.`;
-  return `Imported ${result.customSites} site${plural(result.customSites)}. ${result.deniedHosts} still need permission.`;
-}
-
-function plural(n: number): string {
-  return n === 1 ? '' : 's';
+  if (result.disabledDefaults === 0) return 'Imported settings.';
+  return 'Imported site settings.';
 }
 
 async function render(state?: StoredState): Promise<void> {
   const s = state ?? (await getState());
   renderDefaults(s);
-  renderCustoms(s);
 }
 
 async function boot(): Promise<void> {
-  attachAddForm();
   attachExport();
   attachImport();
   await render();

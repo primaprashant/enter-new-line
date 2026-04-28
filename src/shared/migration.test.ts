@@ -23,25 +23,13 @@ describe('migrateState', () => {
     expect(out.disabledDefaults).toEqual(['chatgpt']);
   });
 
-  it('drops invalid customSites and dedupes by host', () => {
+  it('drops legacy custom-site fields', () => {
     const out = migrateState({
-      customSites: [
-        { host: 'grok.com', enabled: true, addedAt: 100 },
-        { host: 'grok.com', enabled: false, addedAt: 200 }, // duplicate
-        { host: 'not a host' },
-        { host: 'localhost' }, // invalid (single label)
-        'string',
-        { enabled: true },
-      ],
+      customSites: [{ host: 'grok.com', enabled: true, addedAt: 100 }],
+      grantedCustomHosts: ['grok.com'],
     });
-    expect(out.customSites).toEqual([{ host: 'grok.com', enabled: true, addedAt: 100 }]);
-  });
-
-  it('canonicalizes and validates grantedCustomHosts', () => {
-    const out = migrateState({
-      grantedCustomHosts: ['Grok.COM', 'grok.com', 'localhost', 42],
-    });
-    expect(out.grantedCustomHosts).toEqual(['grok.com']);
+    expect('customSites' in out).toBe(false);
+    expect('grantedCustomHosts' in out).toBe(false);
   });
 
   it('preserves valid stats and resets bad ones to zero', () => {
@@ -57,27 +45,5 @@ describe('migrateState', () => {
     expect(out.stats.global).toEqual({ newlines: 5, sends: 0 });
     expect(out.stats.perHost['chatgpt.com']).toEqual({ newlines: 3, sends: 0 });
     expect(out.stats.perHost['']).toBeUndefined();
-  });
-
-  it('defaults missing customSite.enabled to true', () => {
-    const out = migrateState({
-      customSites: [{ host: 'grok.com', addedAt: 1 }],
-    });
-    expect(out.customSites[0]?.enabled).toBe(true);
-  });
-
-  it('clamps non-finite or negative addedAt to 0', () => {
-    const out = migrateState({
-      customSites: [
-        { host: 'a.com', addedAt: Number.NaN },
-        { host: 'b.com', addedAt: -1 },
-        { host: 'c.com', addedAt: 12345 },
-      ],
-    });
-    expect(out.customSites.map((c) => [c.host, c.addedAt])).toEqual([
-      ['a.com', 0],
-      ['b.com', 0],
-      ['c.com', 12345],
-    ]);
   });
 });

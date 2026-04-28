@@ -1,12 +1,11 @@
 /** Background service worker entrypoint. */
 
-import { permissions, runtime, tabs } from '@shared/browser';
+import { runtime, tabs } from '@shared/browser';
 import { onStateChange } from '@shared/events';
 import type { StoredState } from '@shared/schema';
 import { runMigrations } from '@shared/storage';
 
 import { refreshAllTabs, updateIconForTab } from './iconState';
-import { reconcileGrantedPermissions, syncCustomSiteRegistrations } from './scripts';
 import { installStatsListener } from './stats';
 
 const WELCOME_PAGE = 'src/welcome/index.html';
@@ -16,8 +15,6 @@ const WELCOME_PAGE = 'src/welcome/index.html';
 async function bootstrap(reason: string): Promise<void> {
   try {
     await runMigrations();
-    await reconcileGrantedPermissions();
-    await syncCustomSiteRegistrations();
     await refreshAllTabs();
   } catch (err) {
     console.error(`[EnterNewLine] bootstrap (${reason}) failed:`, err);
@@ -67,28 +64,10 @@ tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 function isStructurallyChanged(prev: StoredState | null, next: StoredState): boolean {
   if (!prev) return true;
   if (prev.disabledDefaults.join('|') !== next.disabledDefaults.join('|')) return true;
-  if (prev.grantedCustomHosts.join('|') !== next.grantedCustomHosts.join('|')) return true;
-  if (prev.customSites.length !== next.customSites.length) return true;
-  for (let i = 0; i < prev.customSites.length; i++) {
-    const a = prev.customSites[i];
-    const b = next.customSites[i];
-    if (a?.host !== b?.host || a?.enabled !== b?.enabled) return true;
-  }
   return false;
 }
 
 onStateChange((next, prev) => {
   if (!isStructurallyChanged(prev, next)) return;
-  void syncCustomSiteRegistrations();
   void refreshAllTabs(next);
-});
-
-// ── Permission reactions ────────────────────────────────────────────────────
-
-permissions.onAdded.addListener(() => {
-  void syncCustomSiteRegistrations();
-});
-
-permissions.onRemoved.addListener(() => {
-  void reconcileGrantedPermissions().then(() => syncCustomSiteRegistrations());
 });

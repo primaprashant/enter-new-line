@@ -7,8 +7,6 @@ import { STORAGE_KEY, type StoredState } from './schema';
 const SAMPLE: StoredState = {
   schemaVersion: 1,
   disabledDefaults: ['chatgpt'],
-  customSites: [],
-  grantedCustomHosts: [],
   stats: { global: { newlines: 0, sends: 0 }, perHost: {} },
 };
 

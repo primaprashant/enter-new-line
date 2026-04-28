@@ -1,7 +1,5 @@
 /** Import/export helpers for the options page. */
 
-import { permissions } from '@shared/browser';
-import { originsFor } from '@shared/customSites';
 import { migrateState } from '@shared/migration';
 import { type StoredState } from '@shared/schema';
 import { getState, setState } from '@shared/storage';
@@ -23,37 +21,22 @@ export function exportToFile(state: StoredState): void {
 }
 
 export interface ImportResult {
-  /** Total custom sites carried across from the file. */
-  customSites: number;
-  /** Custom hosts that the browser granted permission for (now usable). */
-  grantedHosts: number;
-  /** Custom hosts the user declined or the browser rejected. */
-  deniedHosts: number;
+  disabledDefaults: number;
 }
 
 export async function applyImport(raw: unknown): Promise<ImportResult> {
   const incoming = migrateState(raw);
-  const neededHosts = incoming.customSites.map((s) => s.host);
-  const origins = neededHosts.flatMap(originsFor);
-
-  if (origins.length > 0) {
-    await permissions.request({ origins }).catch(() => false as const);
-  }
-
-  const [current, grantedHosts] = await Promise.all([getState(), grantedHostsFor(neededHosts)]);
+  const current = await getState();
 
   const merged: StoredState = {
     ...incoming,
     stats: current.stats,
-    grantedCustomHosts: grantedHosts,
   };
 
   await setState(merged);
 
   return {
-    customSites: incoming.customSites.length,
-    grantedHosts: grantedHosts.length,
-    deniedHosts: neededHosts.length - grantedHosts.length,
+    disabledDefaults: incoming.disabledDefaults.length,
   };
 }
 
@@ -63,14 +46,4 @@ export function parseImportText(text: string): unknown {
   } catch {
     throw new Error('That file is not valid JSON.');
   }
-}
-
-async function grantedHostsFor(hosts: readonly string[]): Promise<string[]> {
-  const checks = await Promise.all(
-    hosts.map(async (host) => {
-      const ok = await permissions.contains({ origins: originsFor(host) }).catch(() => false);
-      return ok ? host : null;
-    }),
-  );
-  return checks.filter((host): host is string => host !== null);
 }

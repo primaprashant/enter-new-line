@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { resolveRule } from './siteRules';
+import type { SiteRule } from './siteRules';
 
 let recordedKeydowns: KeyboardEvent[] = [];
 let captureListener: ((e: KeyboardEvent) => void) | null = null;
@@ -23,6 +24,12 @@ function dispatch(target: EventTarget, init: KeyboardEventInit): KeyboardEvent {
   return evt;
 }
 
+function ruleFor(host: string): SiteRule {
+  const rule = resolveRule(host);
+  if (!rule) throw new Error(`Expected rule for ${host}`);
+  return rule;
+}
+
 beforeEach(() => {
   document.body.innerHTML = '';
   recordedKeydowns = [];
@@ -38,21 +45,21 @@ afterEach(() => {
 
 describe('resolveRule', () => {
   it('matches each default site by host', () => {
-    expect(resolveRule('chatgpt.com').host).toBe('chatgpt.com');
-    expect(resolveRule('foo.chatgpt.com').host).toBe('chatgpt.com');
-    expect(resolveRule('claude.ai').host).toBe('claude.ai');
-    expect(resolveRule('gemini.google.com').host).toBe('gemini.google.com');
-    expect(resolveRule('perplexity.ai').host).toBe('perplexity.ai');
-    expect(resolveRule('notebooklm.google.com').host).toBe('notebooklm.google.com');
+    expect(ruleFor('chatgpt.com').host).toBe('chatgpt.com');
+    expect(ruleFor('foo.chatgpt.com').host).toBe('chatgpt.com');
+    expect(ruleFor('claude.ai').host).toBe('claude.ai');
+    expect(ruleFor('gemini.google.com').host).toBe('gemini.google.com');
+    expect(ruleFor('perplexity.ai').host).toBe('perplexity.ai');
+    expect(ruleFor('notebooklm.google.com').host).toBe('notebooklm.google.com');
   });
 
   it('does not cross-match google sibling subdomains', () => {
-    expect(resolveRule('mail.google.com').host).toBe('*');
-    expect(resolveRule('google.com').host).toBe('*');
+    expect(resolveRule('mail.google.com')).toBeNull();
+    expect(resolveRule('google.com')).toBeNull();
   });
 
-  it('falls back to the generic rule for unknown hosts', () => {
-    expect(resolveRule('grok.com').host).toBe('*');
+  it('returns null for unknown hosts', () => {
+    expect(resolveRule('grok.com')).toBeNull();
   });
 });
 
@@ -60,7 +67,7 @@ describe('resolveRule', () => {
 
 describe('ChatGPT rule', () => {
   it('shouldHandle accepts only the prompt textarea', () => {
-    const rule = resolveRule('chatgpt.com');
+    const rule = ruleFor('chatgpt.com');
     const ta = document.createElement('textarea');
     ta.id = 'prompt-textarea';
     expect(rule.shouldHandle(ta)).toBe(true);
@@ -70,7 +77,7 @@ describe('ChatGPT rule', () => {
   });
 
   it('onEnter rewrites Enter to Shift+Enter on the prompt textarea', () => {
-    const rule = resolveRule('chatgpt.com');
+    const rule = ruleFor('chatgpt.com');
     const composer = document.createElement('textarea');
     composer.id = 'prompt-textarea';
     document.body.append(composer);
@@ -85,7 +92,7 @@ describe('ChatGPT rule', () => {
   });
 
   it('onSend re-dispatches with metaKey set', () => {
-    const rule = resolveRule('chatgpt.com');
+    const rule = ruleFor('chatgpt.com');
     const composer = document.createElement('textarea');
     composer.id = 'prompt-textarea';
     document.body.append(composer);
@@ -104,7 +111,7 @@ describe('ChatGPT rule', () => {
 
 describe('Claude rule', () => {
   it('shouldHandle accepts contenteditable divs and textareas', () => {
-    const rule = resolveRule('claude.ai');
+    const rule = ruleFor('claude.ai');
     const div = document.createElement('div');
     div.setAttribute('contenteditable', 'true');
     expect(rule.shouldHandle(div)).toBe(true);
@@ -113,7 +120,7 @@ describe('Claude rule', () => {
   });
 
   it('onEnter inserts a newline into a textarea via the native value setter', () => {
-    const rule = resolveRule('claude.ai');
+    const rule = ruleFor('claude.ai');
     const ta = document.createElement('textarea');
     ta.value = 'hello';
     document.body.append(ta);
@@ -134,7 +141,7 @@ describe('Claude rule', () => {
   });
 
   it('onSend on a textarea clicks the nearest submit button', () => {
-    const rule = resolveRule('claude.ai');
+    const rule = ruleFor('claude.ai');
     const form = document.createElement('form');
     const ta = document.createElement('textarea');
     const submit = document.createElement('button');
@@ -155,7 +162,7 @@ describe('Claude rule', () => {
   });
 
   it('onEnter on a contenteditable dispatches a synthetic Shift+Enter', () => {
-    const rule = resolveRule('claude.ai');
+    const rule = ruleFor('claude.ai');
     const div = document.createElement('div');
     div.setAttribute('contenteditable', 'true');
     document.body.append(div);
@@ -174,7 +181,7 @@ describe('Claude rule', () => {
 
 describe('Gemini rule', () => {
   it('shouldHandle accepts textarea and .ql-editor contenteditable only', () => {
-    const rule = resolveRule('gemini.google.com');
+    const rule = ruleFor('gemini.google.com');
     const ta = document.createElement('textarea');
     expect(rule.shouldHandle(ta)).toBe(true);
 
@@ -189,7 +196,7 @@ describe('Gemini rule', () => {
   });
 
   it('onEnter does not preventDefault — it lets the page handle the synthetic Shift+Enter', () => {
-    const rule = resolveRule('gemini.google.com');
+    const rule = ruleFor('gemini.google.com');
     const ql = document.createElement('div');
     ql.setAttribute('contenteditable', 'true');
     ql.classList.add('ql-editor');
@@ -209,7 +216,7 @@ describe('Gemini rule', () => {
 
 describe('NotebookLM rule', () => {
   it('shouldHandle is restricted to the query-box-input textarea', () => {
-    const rule = resolveRule('notebooklm.google.com');
+    const rule = ruleFor('notebooklm.google.com');
     const ta = document.createElement('textarea');
     ta.classList.add('query-box-input');
     expect(rule.shouldHandle(ta)).toBe(true);
@@ -219,7 +226,7 @@ describe('NotebookLM rule', () => {
   });
 
   it('onSend clicks the query-box submit button', () => {
-    const rule = resolveRule('notebooklm.google.com');
+    const rule = ruleFor('notebooklm.google.com');
     const queryBox = document.createElement('query-box');
     const form = document.createElement('form');
     const ta = document.createElement('textarea');
@@ -239,38 +246,5 @@ describe('NotebookLM rule', () => {
     rule.onSend(evt);
 
     expect(click).toHaveBeenCalled();
-  });
-});
-
-// ── Generic fallback ────────────────────────────────────────────────────────
-
-describe('Generic fallback rule', () => {
-  it('accepts textareas and contenteditables outside [role=search]', () => {
-    const rule = resolveRule('grok.com');
-
-    const ta = document.createElement('textarea');
-    document.body.append(ta);
-    expect(rule.shouldHandle(ta)).toBe(true);
-
-    const ce = document.createElement('div');
-    ce.setAttribute('contenteditable', 'true');
-    document.body.append(ce);
-    expect(rule.shouldHandle(ce)).toBe(true);
-  });
-
-  it('skips inputs nested inside [role=search]', () => {
-    const rule = resolveRule('grok.com');
-    const search = document.createElement('div');
-    search.setAttribute('role', 'search');
-    const ta = document.createElement('textarea');
-    search.append(ta);
-    document.body.append(search);
-    expect(rule.shouldHandle(ta)).toBe(false);
-  });
-
-  it('rejects non-input elements', () => {
-    const rule = resolveRule('grok.com');
-    expect(rule.shouldHandle(document.createElement('span'))).toBe(false);
-    expect(rule.shouldHandle(null)).toBe(false);
   });
 });

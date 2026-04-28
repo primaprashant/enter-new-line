@@ -18,13 +18,12 @@ let detach: (() => void) | null = null;
 
 function isEnabledOn(state: StoredState): boolean {
   const site = resolveSite(pageHost, state);
-  // Default sites are manifest-matched, so treat them as active until storage catches up.
-  if (!site) return rule.host !== '*';
+  if (!site) return false;
   return site.enabled;
 }
 
 function sync(state: StoredState): void {
-  const shouldBeAttached = isEnabledOn(state);
+  const shouldBeAttached = rule !== null && isEnabledOn(state);
   if (shouldBeAttached && !detach) {
     detach = attachKeyHandler(rule, pageHost);
   } else if (!shouldBeAttached && detach) {

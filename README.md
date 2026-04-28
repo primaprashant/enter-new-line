@@ -19,7 +19,7 @@ prompts.
 - perplexity.ai
 - notebooklm.google.com
 
-Custom sites can be added from the options page.
+Custom sites are not supported; the extension intentionally keeps host permissions limited to this default list.
 
 ## Development
 

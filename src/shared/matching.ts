@@ -60,22 +60,15 @@ export function hostMatches(pageHost: string, siteHost: string): boolean {
   return page === site || page.endsWith('.' + site);
 }
 
-export type ResolvedSite =
-  | {
-      readonly kind: 'default';
-      readonly id: string;
-      readonly host: string;
-      readonly label: string;
-      readonly enabled: boolean;
-    }
-  | {
-      readonly kind: 'custom';
-      readonly host: string;
-      readonly label: string;
-      readonly enabled: boolean;
-    };
+export type ResolvedSite = {
+  readonly kind: 'default';
+  readonly id: string;
+  readonly host: string;
+  readonly label: string;
+  readonly enabled: boolean;
+};
 
-/** Resolve a page host to the default or custom site that owns it. */
+/** Resolve a page host to the default site that owns it. */
 export function resolveSite(pageHost: string, state: StoredState): ResolvedSite | null {
   const host = canonicalHost(pageHost);
   if (!host) return null;
@@ -90,23 +83,6 @@ export function resolveSite(pageHost: string, state: StoredState): ResolvedSite 
         enabled: !state.disabledDefaults.includes(d.id),
       };
     }
-  }
-
-  let bestCustom: (typeof state.customSites)[number] | null = null;
-  for (const c of state.customSites) {
-    if (!hostMatches(host, c.host)) continue;
-    if (!bestCustom || c.host.length > bestCustom.host.length) {
-      bestCustom = c;
-    }
-  }
-
-  if (bestCustom) {
-    return {
-      kind: 'custom',
-      host: bestCustom.host,
-      label: bestCustom.host,
-      enabled: bestCustom.enabled,
-    };
   }
 
   return null;

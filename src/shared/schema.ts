@@ -18,22 +18,10 @@ export interface Stats {
   perHost: Record<string, SiteStats>;
 }
 
-export interface CustomSite {
-  /** Canonical host (lowercased, no protocol/path/port). */
-  host: string;
-  /** Whether the extension is currently active on this site. */
-  enabled: boolean;
-  /** Unix-ms timestamp for stable ordering. */
-  addedAt: number;
-}
-
 export interface StoredState {
   schemaVersion: number;
   /** IDs of default sites the user has explicitly toggled off. */
   disabledDefaults: string[];
-  customSites: CustomSite[];
-  /** Hosts for which optional host permission was granted. */
-  grantedCustomHosts: string[];
   stats: Stats;
 }
 
@@ -45,8 +33,6 @@ export function createInitialState(): StoredState {
   return {
     schemaVersion: SCHEMA_VERSION,
     disabledDefaults: [],
-    customSites: [],
-    grantedCustomHosts: [],
     stats: {
       global: emptySiteStats(),
       perHost: {},

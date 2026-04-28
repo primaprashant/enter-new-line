@@ -9,16 +9,14 @@ describe('storage module', () => {
     const state = await getState();
     expect(state.schemaVersion).toBe(1);
     expect(state.disabledDefaults).toEqual([]);
-    expect(state.customSites).toEqual([]);
-    expect(state.grantedCustomHosts).toEqual([]);
+    expect('customSites' in state).toBe(false);
+    expect('grantedCustomHosts' in state).toBe(false);
   });
 
   it('round-trips via setState + getState', async () => {
     const next: StoredState = {
       schemaVersion: 1,
       disabledDefaults: ['claude'],
-      customSites: [{ host: 'grok.com', enabled: true, addedAt: 100 }],
-      grantedCustomHosts: ['grok.com'],
       stats: { global: { newlines: 1, sends: 2 }, perHost: {} },
     };
     await setState(next);
@@ -33,7 +31,7 @@ describe('storage module', () => {
     };
     const state = await getState();
     expect(state.disabledDefaults).toEqual(['chatgpt']);
-    expect(state.customSites).toEqual([{ host: 'grok.com', enabled: true, addedAt: 1 }]);
+    expect('customSites' in state).toBe(false);
     expect(state.stats.global.newlines).toBe(0);
   });
 
@@ -41,8 +39,6 @@ describe('storage module', () => {
     await setState({
       schemaVersion: 1,
       disabledDefaults: [],
-      customSites: [],
-      grantedCustomHosts: [],
       stats: { global: { newlines: 0, sends: 0 }, perHost: {} },
     });
     const next = await updateState((s) => ({
@@ -60,9 +56,9 @@ describe('storage module', () => {
     };
     const out = await runMigrations();
     expect(out.disabledDefaults).toEqual(['chatgpt']);
-    expect(out.grantedCustomHosts).toEqual(['grok.com']);
+    expect('grantedCustomHosts' in out).toBe(false);
     const persisted = syncStorage()[STORAGE_KEY] as StoredState;
     expect(persisted.disabledDefaults).toEqual(['chatgpt']);
-    expect(persisted.grantedCustomHosts).toEqual(['grok.com']);
+    expect('grantedCustomHosts' in persisted).toBe(false);
   });
 });

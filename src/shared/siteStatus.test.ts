@@ -20,31 +20,6 @@ describe('isReadyOn', () => {
     expect(isReadyOn('unknown.example', state())).toBe(false);
   });
 
-  it('requires a host permission for custom sites', () => {
-    const s = state({
-      customSites: [{ host: 'grok.com', enabled: true, addedAt: 1 }],
-    });
-    expect(isReadyOn('grok.com', s)).toBe(false);
-
-    const granted = state({
-      customSites: [{ host: 'grok.com', enabled: true, addedAt: 1 }],
-      grantedCustomHosts: ['grok.com'],
-    });
-    expect(isReadyOn('grok.com', granted)).toBe(true);
-  });
-
-  it('returns false for a paused custom site even when permission is granted', () => {
-    expect(
-      isReadyOn(
-        'grok.com',
-        state({
-          customSites: [{ host: 'grok.com', enabled: false, addedAt: 1 }],
-          grantedCustomHosts: ['grok.com'],
-        }),
-      ),
-    ).toBe(false);
-  });
-
   it('returns false for empty input', () => {
     expect(isReadyOn('', state())).toBe(false);
   });

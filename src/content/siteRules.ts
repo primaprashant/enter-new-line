@@ -62,11 +62,6 @@ function clickNearestSubmit(target: EventTarget | null): boolean {
   return true;
 }
 
-/** True when the focused element is inside an obvious search surface. */
-function isInSearchContext(el: Element): boolean {
-  return Boolean(el.closest('[role="search"], form[role="search"]'));
-}
-
 // ── Default site rules ──────────────────────────────────────────────────────
 
 const CHATGPT: SiteRule = {
@@ -170,33 +165,10 @@ const NOTEBOOKLM: SiteRule = {
 
 const DEFAULT_RULES: readonly SiteRule[] = [CHATGPT, CLAUDE, GEMINI, PERPLEXITY, NOTEBOOKLM];
 
-// ── Generic fallback for user-added custom sites ────────────────────────────
-
-const GENERIC_FALLBACK: SiteRule = {
-  host: '*',
-  shouldHandle(target) {
-    if (!(target instanceof Element)) return false;
-    if (!(isTextarea(target) || isContentEditableDiv(target))) return false;
-    return !isInSearchContext(target);
-  },
-  onEnter(event) {
-    if (!event.target) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    dispatchEnter(event.target, { shiftKey: true });
-  },
-  onSend(event) {
-    if (!event.target) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    dispatchEnter(event.target, {});
-  },
-};
-
 /** Find the rule for a canonical page host. */
-export function resolveRule(pageHost: string): SiteRule {
+export function resolveRule(pageHost: string): SiteRule | null {
   for (const rule of DEFAULT_RULES) {
     if (hostMatches(pageHost, rule.host)) return rule;
   }
-  return GENERIC_FALLBACK;
+  return null;
 }

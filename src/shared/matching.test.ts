@@ -95,40 +95,6 @@ describe('resolveSite', () => {
     expect(site?.enabled).toBe(false);
   });
 
-  it('returns a custom site when no default matches', () => {
-    const state = makeState({
-      customSites: [{ host: 'grok.com', enabled: true, addedAt: 1 }],
-    });
-    const site = resolveSite('chat.grok.com', state);
-    expect(site).toEqual({
-      kind: 'custom',
-      host: 'grok.com',
-      label: 'grok.com',
-      enabled: true,
-    });
-  });
-
-  it('prefers a longer custom-host match over a shorter one', () => {
-    const state = makeState({
-      customSites: [
-        { host: 'example.com', enabled: true, addedAt: 1 },
-        { host: 'sub.example.com', enabled: false, addedAt: 2 },
-      ],
-    });
-    const site = resolveSite('foo.sub.example.com', state);
-    expect(site?.host).toBe('sub.example.com');
-    expect(site?.enabled).toBe(false);
-  });
-
-  it('lets defaults shadow same-host custom sites', () => {
-    const state = makeState({
-      customSites: [{ host: 'chatgpt.com', enabled: false, addedAt: 1 }],
-    });
-    const site = resolveSite('chatgpt.com', state);
-    expect(site?.kind).toBe('default');
-    expect(site?.enabled).toBe(true);
-  });
-
   it('returns null on unknown hosts and empty input', () => {
     expect(resolveSite('unknown.example', makeState())).toBeNull();
     expect(resolveSite('', makeState())).toBeNull();
