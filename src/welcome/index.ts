@@ -1,5 +1,5 @@
 import { DEFAULT_SITES } from '@config/defaultSites';
-import { runtime } from '@shared/browser';
+import { runtime, tabs } from '@shared/browser';
 
 function $<T extends Element>(id: string): T {
   const el = document.getElementById(id);
@@ -55,10 +55,21 @@ function renderSites(): void {
 
 function wireCta(): void {
   $<HTMLButtonElement>('open-settings').addEventListener('click', () => {
-    void runtime.openOptionsPage().catch((err: unknown) => {
-      console.warn('[EnterNewLine] openOptionsPage failed:', err);
-    });
+    void openSettings();
   });
+}
+
+async function openSettings(): Promise<void> {
+  try {
+    await runtime.openOptionsPage();
+  } catch (err) {
+    console.warn('[EnterNewLine] openOptionsPage failed, opening options tab:', err);
+    try {
+      await tabs.create({ url: runtime.getURL('src/options/index.html') });
+    } catch (fallbackErr) {
+      console.warn('[EnterNewLine] failed to open options tab:', fallbackErr);
+    }
+  }
 }
 
 paintSendKey();

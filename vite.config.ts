@@ -18,6 +18,11 @@ export default defineConfig(() => ({
     outDir: `dist/${target}`,
     emptyOutDir: true,
     sourcemap: true,
+    rollupOptions: {
+      input: {
+        welcome: resolve(__dirname, 'src/welcome/index.html'),
+      },
+    },
   },
   plugins: [crx({ manifest, browser: target })],
 }));
