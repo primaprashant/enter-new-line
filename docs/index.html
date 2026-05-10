@@ -16,24 +16,42 @@
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="EnterNewLine — Enter for New Line on ChatGPT, Claude, Gemini" />
+    <meta
+      property="og:title"
+      content="EnterNewLine — Enter for New Line on ChatGPT, Claude, Gemini"
+    />
     <meta
       property="og:description"
       content="Stop accidentally sending half-finished prompts. Press Enter for a new line. Press Cmd + Enter to send. That's the whole extension."
     />
     <meta property="og:url" content="https://primaprashant.github.io/enter-new-line/" />
-    <meta property="og:image" content="https://primaprashant.github.io/enter-new-line/enternewline.png" />
-    <meta property="og:image:alt" content="EnterNewLine — bind Enter to a new line on ChatGPT, Claude, Gemini, Perplexity, NotebookLM." />
+    <meta
+      property="og:image"
+      content="https://primaprashant.github.io/enter-new-line/enternewline.png"
+    />
+    <meta
+      property="og:image:alt"
+      content="EnterNewLine — bind Enter to a new line on ChatGPT, Claude, Gemini, Perplexity, NotebookLM."
+    />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="EnterNewLine — Enter for New Line on ChatGPT, Claude, Gemini" />
+    <meta
+      name="twitter:title"
+      content="EnterNewLine — Enter for New Line on ChatGPT, Claude, Gemini"
+    />
     <meta
       name="twitter:description"
       content="Press Enter for a new line. Press Cmd + Enter to send. That's the whole extension."
     />
-    <meta name="twitter:image" content="https://primaprashant.github.io/enter-new-line/enternewline.png" />
-    <meta name="twitter:image:alt" content="EnterNewLine — bind Enter to a new line on ChatGPT, Claude, Gemini, Perplexity, NotebookLM." />
+    <meta
+      name="twitter:image"
+      content="https://primaprashant.github.io/enter-new-line/enternewline.png"
+    />
+    <meta
+      name="twitter:image:alt"
+      content="EnterNewLine — bind Enter to a new line on ChatGPT, Claude, Gemini, Perplexity, NotebookLM."
+    />
 
     <!-- Schema.org -->
     <script type="application/ld+json">
@@ -139,9 +157,9 @@
         --success: #166534;
         --danger: #991b1b;
 
-        --font-serif: "EB Garamond", Georgia, "Times New Roman", serif;
-        --font-sans: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        --font-serif: 'EB Garamond', Georgia, 'Times New Roman', serif;
+        --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
         --space-1: 4px;
         --space-2: 8px;
@@ -447,7 +465,7 @@
         background: var(--surface-raised);
         color: var(--ink);
       }
-      .btn-secondary[aria-disabled="true"] {
+      .btn-secondary[aria-disabled='true'] {
         color: var(--ink-faint);
         border-color: var(--rule);
         cursor: not-allowed;
@@ -509,7 +527,7 @@
         color: var(--ink-muted);
       }
       .hero .meta span::before {
-        content: "·";
+        content: '·';
         margin-right: var(--space-3);
         color: var(--ink-faint);
       }
@@ -812,7 +830,7 @@
         font-weight: 500;
       }
       .site .status::before {
-        content: "";
+        content: '';
         display: inline-block;
         width: 6px;
         height: 6px;
@@ -913,7 +931,7 @@
         flex-shrink: 0;
       }
       .toggle::after {
-        content: "";
+        content: '';
         position: absolute;
         top: 2px;
         right: 2px;
@@ -1035,7 +1053,7 @@
         color: var(--ink);
       }
       .surfaces .copy li::before {
-        content: "—";
+        content: '—';
         margin-right: var(--space-3);
         color: var(--ink-faint);
       }
@@ -1083,7 +1101,7 @@
         margin-bottom: var(--space-3);
       }
       .doesnt-item .no::before {
-        content: "✕";
+        content: '✕';
         font-size: 14px;
       }
       .doesnt-item h3 {
@@ -1131,7 +1149,7 @@
       }
       .faq .marker::before,
       .faq .marker::after {
-        content: "";
+        content: '';
         position: absolute;
         background: currentColor;
         transition: transform var(--motion-quick) var(--ease-out);
@@ -1267,7 +1285,7 @@
       footer .links a:hover {
         color: var(--ink);
       }
-      footer .links a[aria-disabled="true"] {
+      footer .links a[aria-disabled='true'] {
         color: var(--ink-faint);
         pointer-events: none;
       }
@@ -1708,7 +1726,9 @@
                 </div>
 
                 <div class="row-toggle">
-                  <span><span class="domain">chatgpt.com</span><span class="state">Active</span></span>
+                  <span
+                    ><span class="domain">chatgpt.com</span><span class="state">Active</span></span
+                  >
                   <span class="toggle" aria-hidden="true"></span>
                 </div>
 
@@ -1747,7 +1767,9 @@
               <ul>
                 <li>Whether the extension is active on the current site.</li>
                 <li>Newlines saved on this site, and across every site.</li>
-                <li>Messages sent with <kbd>Cmd&nbsp;+&nbsp;Enter</kbd>, this site and globally.</li>
+                <li>
+                  Messages sent with <kbd>Cmd&nbsp;+&nbsp;Enter</kbd>, this site and globally.
+                </li>
               </ul>
 
               <h3>From settings</h3>
@@ -1855,9 +1877,7 @@
                   cost of being wrong is sending a half-finished prompt to a model that will
                   cheerfully answer it.
                 </p>
-                <p>
-                  EnterNewLine flips the default so the wrong key becomes the safe one.
-                </p>
+                <p>EnterNewLine flips the default so the wrong key becomes the safe one.</p>
               </div>
             </details>
           </div>
@@ -1893,9 +1913,9 @@
               <div class="answer">
                 <p>
                   The content script targets the primary chat/prompt input only &mdash; textarea,
-                  contenteditable, ProseMirror, the usual suspects. Search bars, chat rename
-                  fields, account inputs, and everything else are completely untouched. Paste
-                  behavior is unaffected too.
+                  contenteditable, ProseMirror, the usual suspects. Search bars, chat rename fields,
+                  account inputs, and everything else are completely untouched. Paste behavior is
+                  unaffected too.
                 </p>
               </div>
             </details>
@@ -1929,13 +1949,12 @@
                 <p>
                   Yes &mdash; MIT licensed, every line on
                   <a href="https://github.com/primaprashant/enter-new-line" rel="noopener"
-                    >github.com/primaprashant/enter-new-line</a>. Bug reports, feature requests,
-                  and pull requests are welcome.
+                    >github.com/primaprashant/enter-new-line</a
+                  >. Bug reports, feature requests, and pull requests are welcome.
                 </p>
               </div>
             </details>
           </div>
-
         </div>
       </section>
 
@@ -1943,9 +1962,7 @@
       <section class="closer" aria-labelledby="closer-title">
         <div class="wrap">
           <h2 id="closer-title">Enter inserts a new line, Cmd+Enter sends.</h2>
-          <p class="lede muted">
-            Browser extension that works on ChatGPT, Claude, Gemini & more.
-          </p>
+          <p class="lede muted">Browser extension that works on ChatGPT, Claude, Gemini & more.</p>
           <div class="ctas">
             <a
               class="btn btn-primary"
@@ -2042,9 +2059,7 @@
                 rel="noopener"
                 >License</a
               >
-              <a
-                href="https://github.com/primaprashant/enter-new-line/issues"
-                rel="noopener"
+              <a href="https://github.com/primaprashant/enter-new-line/issues" rel="noopener"
                 >Issues</a
               >
             </div>
