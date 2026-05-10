@@ -1,0 +1,2060 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>EnterNewLine — Enter for New Line on ChatGPT, Claude, Gemini</title>
+    <meta
+      name="description"
+      content="Stop accidentally sending half-finished prompts. Bind Enter to a new line and Cmd+Enter to send on ChatGPT, Claude, Gemini, Perplexity, NotebookLM."
+    />
+    <meta name="author" content="Prashant Anand" />
+    <meta name="theme-color" content="#FAFAF7" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#111113" media="(prefers-color-scheme: dark)" />
+    <link rel="canonical" href="https://primaprashant.github.io/enter-new-line/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="EnterNewLine — Enter for New Line on ChatGPT, Claude, Gemini" />
+    <meta
+      property="og:description"
+      content="Stop accidentally sending half-finished prompts. Press Enter for a new line. Press Cmd + Enter to send. That's the whole extension."
+    />
+    <meta property="og:url" content="https://primaprashant.github.io/enter-new-line/" />
+    <meta property="og:image" content="https://primaprashant.github.io/enter-new-line/enternewline.png" />
+    <meta property="og:image:alt" content="EnterNewLine — bind Enter to a new line on ChatGPT, Claude, Gemini, Perplexity, NotebookLM." />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="EnterNewLine — Enter for New Line on ChatGPT, Claude, Gemini" />
+    <meta
+      name="twitter:description"
+      content="Press Enter for a new line. Press Cmd + Enter to send. That's the whole extension."
+    />
+    <meta name="twitter:image" content="https://primaprashant.github.io/enter-new-line/enternewline.png" />
+    <meta name="twitter:image:alt" content="EnterNewLine — bind Enter to a new line on ChatGPT, Claude, Gemini, Perplexity, NotebookLM." />
+
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "EnterNewLine",
+        "applicationCategory": "BrowserApplication",
+        "operatingSystem": "Chrome, Firefox",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "description": "Stop accidentally sending half-finished prompts. Bind Enter to a new line and Cmd+Enter to send on ChatGPT, Claude, Gemini, Perplexity, NotebookLM.",
+        "author": { "@type": "Person", "name": "Prashant Anand" },
+        "license": "https://opensource.org/license/mit",
+        "url": "https://chromewebstore.google.com/detail/enternewline-%E2%80%94-bind-enter/ingflmkenbhkjhbhcphjjdhpmnnagphp"
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Will this break Shift + Enter?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. Shift + Enter is left exactly the way the site handles it natively — EnterNewLine never intercepts it."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Why not just train myself to use Shift + Enter?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "You can. But muscle memory built across thirty years of email, text editors, and IDEs doesn't care about your conscious intentions, and the cost of being wrong is sending a half-finished prompt. EnterNewLine flips the default so the wrong key becomes the safe one."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Why these five sites and not others?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "ChatGPT, Claude, Gemini, Perplexity, and NotebookLM cover the overwhelming majority of long-form AI chat usage. Shipping with a fixed list keeps host permissions narrow and easy for browser stores to review."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What happens to other inputs on the page?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The content script targets the primary chat/prompt input only — textarea, contenteditable, ProseMirror. Search bars, chat rename fields, and other inputs are completely untouched. Paste behavior is unaffected."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Where are my settings stored?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "In your browser's storage.sync. If you're signed into Chrome, your toggles follow you across your own devices. Export/import as JSON for moving across browsers or accounts."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is it really open source?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes — MIT licensed, every line on github.com/primaprashant/enter-new-line. Bug reports, feature requests, and pull requests are welcome."
+            }
+          }
+        ]
+      }
+    </script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Favicon: a simple ↵ glyph in the accent color, inlined as an SVG data URL. -->
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23FAFAF7'/%3E%3Cpath d='M25 8v8a4 4 0 0 1-4 4H10' fill='none' stroke='%23C2410C' stroke-width='2.5' stroke-linecap='square' stroke-linejoin='miter'/%3E%3Cpath d='M14 16l-4 4 4 4' fill='none' stroke='%23C2410C' stroke-width='2.5' stroke-linecap='square' stroke-linejoin='miter'/%3E%3C/svg%3E"
+    />
+
+    <style>
+      /* ---------- Tokens ---------- */
+      :root {
+        --surface: #fafaf7;
+        --surface-raised: #f2f1ec;
+        --surface-sunken: #ecebe5;
+        --ink: #1c1c1a;
+        --ink-muted: #78766f;
+        --ink-faint: #b5b2a8;
+        --rule: #e9e7df;
+        --rule-strong: #d6d3c7;
+        --accent: #c2410c;
+        --accent-hover: #9a3209;
+        --accent-soft: #f5e4d8;
+        --success: #166534;
+        --danger: #991b1b;
+
+        --font-serif: "EB Garamond", Georgia, "Times New Roman", serif;
+        --font-sans: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+        --space-1: 4px;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 24px;
+        --space-6: 32px;
+        --space-7: 48px;
+        --space-8: 64px;
+        --space-9: 96px;
+
+        --radius-xs: 2px;
+        --radius-pill: 999px;
+
+        --motion-instant: 80ms;
+        --motion-quick: 150ms;
+        --motion-standard: 220ms;
+        --motion-entry: 320ms;
+        --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+        --measure: 64ch;
+        --container: 1080px;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --surface: #111113;
+          --surface-raised: #1a1a1d;
+          --surface-sunken: #0b0b0d;
+          --ink: #f4f4f5;
+          --ink-muted: #8b8b92;
+          --ink-faint: #55555b;
+          --rule: #26262b;
+          --rule-strong: #3a3a41;
+          --accent: #e86c3a;
+          --accent-hover: #f5875a;
+          --accent-soft: #2a1811;
+          --success: #86efac;
+          --danger: #f87171;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0ms !important;
+          animation-delay: 0ms !important;
+          transition-duration: 0ms !important;
+        }
+      }
+
+      /* ---------- Reset ---------- */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      html {
+        -webkit-text-size-adjust: 100%;
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background: var(--surface);
+        color: var(--ink);
+        font-family: var(--font-sans);
+        font-size: 16px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+      }
+      img,
+      svg {
+        display: block;
+        max-width: 100%;
+      }
+      a {
+        color: var(--accent);
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 3px;
+      }
+      a:hover {
+        color: var(--accent-hover);
+      }
+      button {
+        font: inherit;
+        background: none;
+        border: 0;
+        cursor: pointer;
+        color: inherit;
+      }
+      ::selection {
+        background: var(--accent-soft);
+        color: var(--ink);
+      }
+
+      /* ---------- Layout ---------- */
+      .wrap {
+        max-width: var(--container);
+        margin: 0 auto;
+        padding: 0 var(--space-5);
+      }
+
+      /* ---------- Typography ---------- */
+      .display,
+      h1,
+      h2,
+      h3 {
+        font-family: var(--font-serif);
+        font-weight: 500;
+        color: var(--ink);
+        margin: 0;
+      }
+      .display {
+        font-size: clamp(2.5rem, 6.5vw, 4.5rem);
+        line-height: 1.04;
+        letter-spacing: -0.02em;
+      }
+      h1 {
+        font-size: clamp(2rem, 4.5vw, 3rem);
+        line-height: 1.1;
+        letter-spacing: -0.015em;
+      }
+      h2 {
+        font-size: clamp(1.625rem, 3vw, 2rem);
+        line-height: 1.2;
+        letter-spacing: -0.01em;
+      }
+      h3 {
+        font-size: 1.375rem;
+        line-height: 1.3;
+      }
+
+      .eyebrow {
+        font-family: var(--font-sans);
+        font-weight: 500;
+        font-size: 0.75rem;
+        line-height: 1.4;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--ink-muted);
+        margin: 0 0 var(--space-4);
+      }
+      .lede {
+        font-family: var(--font-serif);
+        font-size: clamp(1.125rem, 1.6vw, 1.375rem);
+        line-height: 1.55;
+        color: var(--ink);
+        margin: 0;
+        max-width: var(--measure);
+      }
+      .lede.muted {
+        color: var(--ink-muted);
+      }
+      p {
+        font-family: var(--font-serif);
+        font-size: 1.125rem;
+        line-height: 1.6;
+        margin: 0 0 var(--space-4);
+        max-width: var(--measure);
+      }
+      .small,
+      .caption {
+        font-family: var(--font-sans);
+        font-size: 0.875rem;
+        line-height: 1.45;
+        color: var(--ink-muted);
+      }
+
+      em,
+      i {
+        font-style: italic;
+      }
+
+      kbd,
+      .kbd {
+        font-family: var(--font-mono);
+        font-size: 0.85em;
+        font-weight: 500;
+        padding: 2px 6px;
+        background: var(--surface-sunken);
+        border: 1px solid var(--rule-strong);
+        border-radius: var(--radius-xs);
+        color: var(--ink);
+        white-space: nowrap;
+      }
+      code {
+        font-family: var(--font-mono);
+        font-size: 0.9em;
+        background: var(--surface-sunken);
+        padding: 2px 6px;
+        border-radius: var(--radius-xs);
+        color: var(--ink);
+      }
+
+      /* ---------- Header ---------- */
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: color-mix(in srgb, var(--surface) 92%, transparent);
+        backdrop-filter: saturate(160%) blur(8px);
+        -webkit-backdrop-filter: saturate(160%) blur(8px);
+        border-bottom: 1px solid var(--rule);
+      }
+      .site-header .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 64px;
+      }
+      .wordmark {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        font-family: var(--font-serif);
+        font-weight: 500;
+        font-size: 1.25rem;
+        color: var(--ink);
+        text-decoration: none;
+        letter-spacing: -0.01em;
+      }
+      .wordmark:hover {
+        color: var(--ink);
+      }
+      .wordmark .glyph {
+        width: 22px;
+        height: 22px;
+        color: var(--accent);
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: var(--space-6);
+      }
+      .nav a:not(.btn):not(.icon-link) {
+        font-family: var(--font-sans);
+        font-size: 0.9375rem;
+        color: var(--ink-muted);
+        text-decoration: none;
+        font-weight: 500;
+      }
+      .nav a:not(.btn):not(.icon-link):hover {
+        color: var(--ink);
+      }
+      .nav .btn {
+        padding: 8px 14px;
+      }
+      @media (max-width: 720px) {
+        .nav a:not(.btn):not(.icon-link) {
+          display: none;
+        }
+      }
+
+      /* ---------- Buttons ---------- */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-2);
+        font-family: var(--font-sans);
+        font-weight: 500;
+        font-size: 0.9375rem;
+        line-height: 1.2;
+        padding: 12px 18px;
+        border-radius: var(--radius-xs);
+        text-decoration: none;
+        border: 1px solid transparent;
+        transition:
+          background-color var(--motion-instant) var(--ease-out),
+          border-color var(--motion-instant) var(--ease-out),
+          color var(--motion-instant) var(--ease-out);
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .btn .icon {
+        width: 16px;
+        height: 16px;
+      }
+      .btn .icon-out {
+        width: 12px;
+        height: 12px;
+        opacity: 0.7;
+        margin-left: 2px;
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: #ffffff;
+      }
+      .btn-primary:hover {
+        background: var(--accent-hover);
+        color: #ffffff;
+      }
+      .btn-secondary {
+        background: transparent;
+        color: var(--ink);
+        border-color: var(--rule-strong);
+      }
+      .btn-secondary:hover {
+        background: var(--surface-raised);
+        color: var(--ink);
+      }
+      .btn-secondary[aria-disabled="true"] {
+        color: var(--ink-faint);
+        border-color: var(--rule);
+        cursor: not-allowed;
+      }
+      .btn-ghost {
+        background: transparent;
+        color: var(--ink-muted);
+        padding: 12px 8px;
+      }
+      .btn-ghost:hover {
+        color: var(--ink);
+      }
+      .btn:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      /* ---------- Hero ---------- */
+      .hero {
+        padding: var(--space-9) 0 var(--space-8);
+        border-bottom: 1px solid var(--rule);
+      }
+      .hero .grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: var(--space-8);
+        align-items: center;
+      }
+      @media (max-width: 880px) {
+        .hero {
+          padding: var(--space-8) 0 var(--space-7);
+        }
+        .hero .grid {
+          grid-template-columns: 1fr;
+          gap: var(--space-7);
+        }
+      }
+      .hero .display {
+        margin-bottom: var(--space-5);
+        animation: rise var(--motion-entry) var(--ease-out) both;
+      }
+      .hero .lede {
+        animation: rise var(--motion-entry) var(--ease-out) 80ms both;
+      }
+      .hero .ctas {
+        margin-top: var(--space-7);
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-3);
+        animation: rise var(--motion-entry) var(--ease-out) 160ms both;
+      }
+      .hero .meta {
+        margin-top: var(--space-5);
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-5);
+        font-family: var(--font-sans);
+        font-size: 0.8125rem;
+        color: var(--ink-muted);
+      }
+      .hero .meta span::before {
+        content: "·";
+        margin-right: var(--space-3);
+        color: var(--ink-faint);
+      }
+      .hero .meta span:first-child::before {
+        content: none;
+        margin: 0;
+      }
+
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ---------- Hero visual: keypress demo ---------- */
+      .keypress-demo {
+        display: grid;
+        gap: var(--space-4);
+        animation: rise var(--motion-entry) var(--ease-out) 240ms both;
+      }
+      .key-row {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: center;
+        gap: var(--space-5);
+        padding: var(--space-5);
+        background: var(--surface-raised);
+        border: 1px solid var(--rule);
+      }
+      .key-row .keys {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+      }
+      .key-cap {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        min-width: 56px;
+        height: 44px;
+        padding: 0 14px;
+        background: var(--surface);
+        border: 1px solid var(--rule-strong);
+        border-bottom-width: 2px;
+        border-radius: var(--radius-xs);
+        font-family: var(--font-mono);
+        font-size: 0.9375rem;
+        font-weight: 500;
+        color: var(--ink);
+      }
+      .key-cap.accent {
+        background: var(--accent);
+        color: #fff;
+        border-color: var(--accent-hover);
+      }
+      .key-cap .arrow {
+        width: 14px;
+        height: 14px;
+      }
+      .key-plus {
+        font-family: var(--font-mono);
+        color: var(--ink-faint);
+      }
+      .key-row .behavior {
+        font-family: var(--font-serif);
+        font-size: 1.25rem;
+        line-height: 1.3;
+        color: var(--ink);
+      }
+      .key-row .behavior em {
+        color: var(--accent);
+        font-style: italic;
+      }
+      .key-row .behavior .small {
+        font-family: var(--font-sans);
+        font-size: 0.8125rem;
+        color: var(--ink-muted);
+        display: block;
+        margin-top: 4px;
+      }
+
+      /* ---------- Section base ---------- */
+      section {
+        padding: var(--space-9) 0;
+        border-bottom: 1px solid var(--rule);
+      }
+      @media (max-width: 720px) {
+        section {
+          padding: var(--space-8) 0;
+        }
+      }
+      .section-head {
+        max-width: var(--measure);
+        margin-bottom: var(--space-7);
+      }
+      .section-head h2 {
+        margin-bottom: var(--space-4);
+      }
+      .section-head .lede {
+        color: var(--ink-muted);
+      }
+
+      /* ---------- The problem ---------- */
+      .problem .story {
+        font-family: var(--font-serif);
+        font-size: clamp(1.5rem, 2.6vw, 2rem);
+        line-height: 1.35;
+        max-width: 28ch;
+        color: var(--ink);
+        margin: 0 0 var(--space-6);
+        letter-spacing: -0.005em;
+      }
+      .problem .story em {
+        color: var(--accent);
+        font-style: italic;
+      }
+      .problem .compare {
+        margin-top: var(--space-7);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-5);
+      }
+      @media (max-width: 720px) {
+        .problem .compare {
+          grid-template-columns: 1fr;
+        }
+      }
+      .compare-card {
+        padding: var(--space-5);
+        background: var(--surface-raised);
+        border: 1px solid var(--rule);
+      }
+      .compare-card .label {
+        font-family: var(--font-sans);
+        font-size: 0.6875rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--ink-muted);
+        margin: 0 0 var(--space-4);
+      }
+      .compare-card .label.bad {
+        color: var(--danger);
+      }
+      .compare-card .label.good {
+        color: var(--accent);
+      }
+      .compare-card .input-mock {
+        background: var(--surface);
+        border: 1px solid var(--rule-strong);
+        padding: var(--space-4);
+        font-family: var(--font-serif);
+        font-size: 1rem;
+        line-height: 1.55;
+        color: var(--ink);
+        min-height: 96px;
+        position: relative;
+      }
+      .compare-card .input-mock .cursor {
+        display: inline-block;
+        width: 2px;
+        height: 1.1em;
+        background: var(--accent);
+        vertical-align: text-bottom;
+        margin-left: 1px;
+        animation: blink 1.1s steps(2, start) infinite;
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .compare-card .input-mock .ghost {
+        color: var(--ink-faint);
+      }
+      .compare-card .outcome {
+        margin-top: var(--space-3);
+        font-family: var(--font-sans);
+        font-size: 0.8125rem;
+        color: var(--ink-muted);
+      }
+      .compare-card .outcome .pill {
+        display: inline-block;
+        font-size: 0.6875rem;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 2px 8px;
+        border: 1px solid currentColor;
+        margin-right: var(--space-2);
+      }
+      .compare-card .outcome .pill.bad {
+        color: var(--danger);
+      }
+      .compare-card .outcome .pill.good {
+        color: var(--accent);
+      }
+
+      /* ---------- How it works (table) ---------- */
+      .bindings {
+        margin: 0;
+      }
+      .binding {
+        display: grid;
+        grid-template-columns: minmax(220px, 1fr) 2fr;
+        gap: var(--space-6);
+        align-items: baseline;
+        padding: var(--space-6) 0;
+        border-top: 1px solid var(--rule);
+      }
+      .binding:last-child {
+        border-bottom: 1px solid var(--rule);
+      }
+      .binding .keys {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        flex-wrap: wrap;
+      }
+      .binding h3 {
+        font-family: var(--font-serif);
+        font-size: 1.5rem;
+        margin: 0 0 var(--space-2);
+      }
+      .binding p {
+        margin: 0;
+        font-size: 1.125rem;
+        color: var(--ink-muted);
+      }
+      .binding .behavior em {
+        font-style: italic;
+        color: var(--accent);
+      }
+      @media (max-width: 720px) {
+        .binding {
+          grid-template-columns: 1fr;
+          gap: var(--space-3);
+        }
+      }
+
+      /* ---------- Where it works ---------- */
+      .sites {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .site {
+        display: grid;
+        grid-template-columns: 60px 1fr auto;
+        align-items: center;
+        gap: var(--space-5);
+        padding: var(--space-5) 0;
+        border-top: 1px solid var(--rule);
+      }
+      .site:last-child {
+        border-bottom: 1px solid var(--rule);
+      }
+      .site-mark {
+        width: 44px;
+        height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--surface-raised);
+        border: 1px solid var(--rule);
+        color: var(--ink);
+      }
+      .site-mark svg {
+        width: 22px;
+        height: 22px;
+        color: var(--accent);
+      }
+      .site-name {
+        font-family: var(--font-serif);
+        font-size: 1.5rem;
+        font-weight: 500;
+        color: var(--ink);
+      }
+      .site-name .domain {
+        font-family: var(--font-mono);
+        font-size: 0.8125rem;
+        font-weight: 400;
+        color: var(--ink-muted);
+        display: block;
+        margin-top: 2px;
+        letter-spacing: 0;
+      }
+      .site .status {
+        font-family: var(--font-sans);
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--accent);
+        font-weight: 500;
+      }
+      .site .status::before {
+        content: "";
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        background: var(--accent);
+        margin-right: 8px;
+        vertical-align: middle;
+        border-radius: var(--radius-pill);
+      }
+
+      /* ---------- Surfaces preview (popup + settings) ---------- */
+      .surfaces {
+        background: var(--surface-sunken);
+      }
+      .surfaces .grid {
+        display: grid;
+        grid-template-columns: 340px 1fr;
+        gap: var(--space-9);
+        align-items: start;
+      }
+      @media (max-width: 1024px) {
+        .surfaces .grid {
+          gap: var(--space-7);
+        }
+      }
+      @media (max-width: 880px) {
+        .surfaces .grid {
+          grid-template-columns: 1fr;
+          gap: var(--space-7);
+        }
+      }
+      .preview {
+        background: var(--surface);
+        border: 1px solid var(--rule);
+        font-family: var(--font-sans);
+        font-size: 13px;
+        line-height: 1.45;
+        color: var(--ink);
+      }
+      .preview .preview-frame {
+        padding: 16px;
+      }
+      .preview .preview-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-3);
+      }
+      .preview .preview-head .title {
+        font-family: var(--font-serif);
+        font-size: 18px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+      }
+      .preview .preview-head .dot {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        background: var(--accent);
+        border-radius: var(--radius-pill);
+      }
+      .preview .preview-head .label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--ink-muted);
+        font-weight: 500;
+      }
+      .preview .row-toggle {
+        margin-top: 16px;
+        padding: 12px 0;
+        border-top: 1px solid var(--rule);
+        border-bottom: 1px solid var(--rule);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .preview .row-toggle .domain {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: var(--ink);
+      }
+      .preview .row-toggle .state {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--ink-muted);
+        font-weight: 500;
+        margin-left: 6px;
+      }
+      .toggle {
+        position: relative;
+        width: 36px;
+        height: 20px;
+        background: var(--accent);
+        border-radius: var(--radius-pill);
+        flex-shrink: 0;
+      }
+      .toggle::after {
+        content: "";
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        width: 16px;
+        height: 16px;
+        background: #fff;
+        border-radius: var(--radius-pill);
+      }
+      .toggle.off {
+        background: var(--rule-strong);
+      }
+      .toggle.off::after {
+        right: auto;
+        left: 2px;
+      }
+      .preview .stats {
+        margin-top: 16px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .preview .stats .col-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--ink-muted);
+        font-weight: 500;
+        margin-bottom: 12px;
+      }
+      .preview .stat .num {
+        font-family: var(--font-serif);
+        font-size: 22px;
+        font-weight: 500;
+        color: var(--ink);
+        line-height: 1;
+      }
+      .preview .stat .lbl {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--ink-muted);
+        font-weight: 500;
+        margin-top: 4px;
+      }
+      .preview .stat + .stat {
+        margin-top: 12px;
+      }
+      .preview .footer {
+        margin-top: 16px;
+        padding-top: 12px;
+        border-top: 1px solid var(--rule);
+        text-align: right;
+        font-size: 12px;
+        color: var(--ink-muted);
+      }
+
+      /* settings preview */
+      .preview-settings .preview-frame {
+        padding: 24px;
+      }
+      .preview-settings .ttl {
+        font-family: var(--font-serif);
+        font-size: 24px;
+        font-weight: 500;
+      }
+      .preview-settings .section-ttl {
+        font-family: var(--font-serif);
+        font-size: 16px;
+        font-weight: 500;
+        margin: 24px 0 0;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--rule);
+      }
+      .preview-settings .site-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--rule);
+        font-size: 13px;
+      }
+      .preview-settings .site-row .name {
+        font-family: var(--font-serif);
+        font-size: 16px;
+      }
+      .preview-settings .site-row .domain {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--ink-muted);
+        margin-left: 8px;
+      }
+      .preview-settings .actions {
+        margin-top: 16px;
+        display: flex;
+        gap: 8px;
+      }
+      .preview-settings .actions .btn {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      .surfaces .copy h3 {
+        margin-top: var(--space-5);
+        margin-bottom: var(--space-2);
+      }
+      .surfaces .copy h3:first-child {
+        margin-top: 0;
+      }
+      .surfaces .copy ul {
+        margin: 0 0 var(--space-5);
+        padding: 0;
+        list-style: none;
+      }
+      .surfaces .copy li {
+        font-family: var(--font-serif);
+        font-size: 1.0625rem;
+        line-height: 1.55;
+        padding: 6px 0;
+        color: var(--ink);
+      }
+      .surfaces .copy li::before {
+        content: "—";
+        margin-right: var(--space-3);
+        color: var(--ink-faint);
+      }
+
+      /* ---------- Privacy ---------- */
+      .privacy .doesnt {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0;
+        border-top: 1px solid var(--rule);
+      }
+      @media (max-width: 720px) {
+        .privacy .doesnt {
+          grid-template-columns: 1fr;
+        }
+      }
+      .doesnt-item {
+        padding: var(--space-6) var(--space-5) var(--space-6) 0;
+        border-bottom: 1px solid var(--rule);
+      }
+      .privacy .doesnt > .doesnt-item:nth-child(odd) {
+        padding-right: var(--space-6);
+        border-right: 1px solid var(--rule);
+        padding-left: 0;
+      }
+      .privacy .doesnt > .doesnt-item:nth-child(even) {
+        padding-left: var(--space-6);
+      }
+      @media (max-width: 720px) {
+        .privacy .doesnt > .doesnt-item {
+          padding: var(--space-5) 0 !important;
+          border-right: 0 !important;
+        }
+      }
+      .doesnt-item .no {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        font-family: var(--font-sans);
+        font-size: 0.6875rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: var(--space-3);
+      }
+      .doesnt-item .no::before {
+        content: "✕";
+        font-size: 14px;
+      }
+      .doesnt-item h3 {
+        font-size: 1.5rem;
+        margin: 0 0 var(--space-2);
+      }
+      .doesnt-item p {
+        font-size: 1.0625rem;
+        color: var(--ink-muted);
+        margin: 0;
+      }
+
+      /* ---------- FAQ ---------- */
+      .faq .item {
+        border-top: 1px solid var(--rule);
+      }
+      .faq .item:last-child {
+        border-bottom: 1px solid var(--rule);
+      }
+      .faq details {
+        padding: var(--space-5) 0;
+      }
+      .faq summary {
+        list-style: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-5);
+      }
+      .faq summary::-webkit-details-marker {
+        display: none;
+      }
+      .faq summary h3 {
+        font-size: 1.375rem;
+        margin: 0;
+        flex: 1;
+      }
+      .faq .marker {
+        flex-shrink: 0;
+        width: 24px;
+        height: 24px;
+        position: relative;
+        color: var(--ink-muted);
+      }
+      .faq .marker::before,
+      .faq .marker::after {
+        content: "";
+        position: absolute;
+        background: currentColor;
+        transition: transform var(--motion-quick) var(--ease-out);
+      }
+      .faq .marker::before {
+        top: 11px;
+        left: 4px;
+        right: 4px;
+        height: 2px;
+      }
+      .faq .marker::after {
+        left: 11px;
+        top: 4px;
+        bottom: 4px;
+        width: 2px;
+      }
+      .faq details[open] .marker::after {
+        transform: scaleY(0);
+      }
+      .faq details[open] .marker {
+        color: var(--accent);
+      }
+      .faq .answer {
+        margin-top: var(--space-4);
+        max-width: var(--measure);
+      }
+      .faq .answer p {
+        margin: 0 0 var(--space-3);
+        color: var(--ink-muted);
+      }
+      .faq .answer p:last-child {
+        margin-bottom: 0;
+      }
+
+      /* ---------- Final CTA ---------- */
+      .closer {
+        text-align: center;
+        padding: var(--space-9) 0;
+      }
+      .closer h2 {
+        font-size: clamp(2rem, 5vw, 3.25rem);
+        line-height: 1.1;
+        letter-spacing: -0.015em;
+        max-width: 23ch;
+        margin: 0 auto var(--space-5);
+      }
+      .closer .lede {
+        margin: 0 auto var(--space-7);
+        color: var(--ink-muted);
+      }
+      .closer .ctas {
+        display: inline-flex;
+        flex-wrap: wrap;
+        gap: var(--space-3);
+        justify-content: center;
+      }
+      .closer .free-line {
+        margin: var(--space-6) auto 0;
+        max-width: none;
+        font-family: var(--font-sans);
+        font-size: 0.8125rem;
+        color: var(--ink-muted);
+        letter-spacing: 0.04em;
+      }
+      .closer .lede {
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .closer .free-line .sep {
+        margin: 0 var(--space-3);
+        color: var(--ink-faint);
+      }
+
+      /* ---------- Footer ---------- */
+      footer {
+        border-top: 1px solid var(--rule);
+        padding: var(--space-7) 0 var(--space-7);
+      }
+      footer .row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: var(--space-7);
+        align-items: start;
+      }
+      @media (max-width: 720px) {
+        footer .row {
+          grid-template-columns: 1fr;
+          gap: var(--space-6);
+        }
+      }
+      footer .brand .tagline {
+        font-family: var(--font-serif);
+        font-size: 1rem;
+        line-height: 1.5;
+        color: var(--ink-muted);
+        margin: var(--space-3) 0 0;
+        max-width: none;
+        white-space: nowrap;
+      }
+      @media (max-width: 480px) {
+        footer .brand .tagline {
+          white-space: normal;
+        }
+      }
+      footer .end {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: var(--space-4);
+      }
+      @media (max-width: 720px) {
+        footer .end {
+          align-items: flex-start;
+        }
+      }
+      footer .links {
+        display: flex;
+        gap: var(--space-5);
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+      @media (max-width: 720px) {
+        footer .links {
+          justify-content: flex-start;
+        }
+      }
+      footer .links a {
+        font-family: var(--font-sans);
+        font-size: 0.875rem;
+        color: var(--ink-muted);
+        text-decoration: none;
+      }
+      footer .links a:hover {
+        color: var(--ink);
+      }
+      footer .links a[aria-disabled="true"] {
+        color: var(--ink-faint);
+        pointer-events: none;
+      }
+      footer .signature {
+        font-family: var(--font-sans);
+        font-size: 0.8125rem;
+        color: var(--ink-muted);
+        margin: 0;
+      }
+      footer .signature a {
+        color: var(--ink);
+        text-decoration: none;
+        border-bottom: 1px solid var(--rule-strong);
+        padding-bottom: 1px;
+      }
+      footer .signature a:hover {
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+      }
+
+      .icon-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        color: var(--ink-muted);
+      }
+      .icon-link:hover {
+        color: var(--ink);
+      }
+      .icon-link svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      /* ---------- Utility ---------- */
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- ============ Header ============ -->
+    <header class="site-header">
+      <div class="wrap row">
+        <a href="#top" class="wordmark" aria-label="EnterNewLine — home">
+          <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M20 6v6a3 3 0 0 1-3 3H6"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="square"
+              stroke-linejoin="miter"
+            />
+            <path
+              d="M10 11l-4 4 4 4"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="square"
+              stroke-linejoin="miter"
+            />
+          </svg>
+          EnterNewLine
+        </a>
+
+        <nav class="nav" aria-label="Primary">
+          <a href="#how-it-works">How it works</a>
+          <a href="#where">Supported sites</a>
+          <a href="#privacy">Privacy</a>
+          <a href="#faq">FAQ</a>
+          <a
+            class="icon-link"
+            href="https://github.com/primaprashant/enter-new-line"
+            aria-label="GitHub repository"
+            rel="noopener"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
+              />
+            </svg>
+          </a>
+          <a
+            class="btn btn-primary"
+            href="https://chromewebstore.google.com/detail/enternewline-%E2%80%94-bind-enter/ingflmkenbhkjhbhcphjjdhpmnnagphp"
+            rel="noopener"
+          >
+            <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M12 0C8.21 0 4.831 1.757 2.632 4.501l3.953 6.848A5.454 5.454 0 0 1 12 6.545h10.691A12 12 0 0 0 12 0zM1.931 5.47A11.943 11.943 0 0 0 0 12c0 6.012 4.42 10.991 10.189 11.864l3.953-6.847a5.45 5.45 0 0 1-6.865-2.29zm13.342 2.166a5.446 5.446 0 0 1 1.45 7.09l.002.001h-.002l-5.344 9.257c.206.01.413.016.621.016 6.627 0 12-5.373 12-12 0-1.54-.29-3.011-.818-4.364zM12 16.364a4.364 4.364 0 1 1 0-8.728 4.364 4.364 0 0 1 0 8.728Z"
+              />
+            </svg>
+            Add to Chrome
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top">
+      <!-- ============ Hero ============ -->
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="wrap grid">
+          <div>
+            <p class="eyebrow">Browser extension · Chrome &amp; Firefox</p>
+            <h1 id="hero-title" class="display">
+              Stop accidentally sending half-finished prompts.
+            </h1>
+            <p class="lede" style="margin-top: var(--space-5)">
+              Press <kbd>Enter</kbd> for a new line. Press <kbd>Cmd&nbsp;+&nbsp;Enter</kbd> to send.
+              That&rsquo;s the whole extension.
+            </p>
+            <div class="ctas">
+              <a
+                class="btn btn-primary"
+                href="https://chromewebstore.google.com/detail/enternewline-%E2%80%94-bind-enter/ingflmkenbhkjhbhcphjjdhpmnnagphp"
+                rel="noopener"
+              >
+                <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 0C8.21 0 4.831 1.757 2.632 4.501l3.953 6.848A5.454 5.454 0 0 1 12 6.545h10.691A12 12 0 0 0 12 0zM1.931 5.47A11.943 11.943 0 0 0 0 12c0 6.012 4.42 10.991 10.189 11.864l3.953-6.847a5.45 5.45 0 0 1-6.865-2.29zm13.342 2.166a5.446 5.446 0 0 1 1.45 7.09l.002.001h-.002l-5.344 9.257c.206.01.413.016.621.016 6.627 0 12-5.373 12-12 0-1.54-.29-3.011-.818-4.364zM12 16.364a4.364 4.364 0 1 1 0-8.728 4.364 4.364 0 0 1 0 8.728Z"
+                  />
+                </svg>
+                Add to Chrome
+              </a>
+              <button class="btn btn-secondary" type="button" aria-disabled="true" disabled>
+                <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M8.824 7.287c.008 0 .004 0 0 0zm-2.8-1.4c.006 0 .003 0 0 0zm16.754 2.161c-.505-1.215-1.53-2.528-2.333-2.943.654 1.283 1.033 2.57 1.177 3.53l.002.02c-1.314-3.278-3.544-4.6-5.366-7.477-.091-.147-.184-.292-.273-.446a3.545 3.545 0 01-.13-.24 2.118 2.118 0 01-.172-.46.03.03 0 00-.027-.03.038.038 0 00-.021 0l-.006.001a.037.037 0 00-.01.005L15.624 0c-2.585 1.515-3.657 4.168-3.932 5.856a6.197 6.197 0 00-2.305.587.297.297 0 00-.147.37c.057.162.24.24.396.17a5.622 5.622 0 012.008-.523l.067-.005a5.847 5.847 0 011.957.222l.095.03a5.816 5.816 0 01.616.228c.08.036.16.073.238.112l.107.055a5.835 5.835 0 01.368.211 5.953 5.953 0 012.034 2.104c-.62-.437-1.733-.868-2.803-.681 4.183 2.09 3.06 9.292-2.737 9.02a5.164 5.164 0 01-1.513-.292 4.42 4.42 0 01-.538-.232c-1.42-.735-2.593-2.121-2.74-3.806 0 0 .537-2 3.845-2 .357 0 1.38-.998 1.398-1.287-.005-.095-2.029-.9-2.817-1.677-.422-.416-.622-.616-.8-.767a3.47 3.47 0 00-.301-.227 5.388 5.388 0 01-.032-2.842c-1.195.544-2.124 1.403-2.8 2.163h-.006c-.46-.584-.428-2.51-.402-2.913-.006-.025-.343.176-.389.206-.406.29-.787.616-1.136.974-.397.403-.76.839-1.085 1.303a9.816 9.816 0 00-1.562 3.52c-.003.013-.11.487-.19 1.073-.013.09-.026.181-.037.272a7.8 7.8 0 00-.069.667l-.002.034-.023.387-.001.06C.386 18.795 5.593 24 12.016 24c5.752 0 10.527-4.176 11.463-9.661.02-.149.035-.298.052-.448.232-1.994-.025-4.09-.753-5.844z"
+                  />
+                </svg>
+                Firefox &mdash; coming soon
+              </button>
+              <a
+                class="btn btn-ghost"
+                href="https://github.com/primaprashant/enter-new-line"
+                target="_blank"
+                rel="noopener"
+              >
+                <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
+                  />
+                </svg>
+                View source on GitHub
+                <svg class="icon-out" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path
+                    d="M7 17L17 7M17 7H9M17 7V15"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="square"
+                    stroke-linejoin="miter"
+                  />
+                </svg>
+              </a>
+            </div>
+            <div class="meta">
+              <span>Free, forever</span>
+              <span>Open source · MIT</span>
+              <span>No data leaves your browser</span>
+            </div>
+          </div>
+
+          <!-- Visual: keypress demo -->
+          <div class="keypress-demo" aria-hidden="true">
+            <div class="key-row">
+              <div class="keys">
+                <span class="key-cap">
+                  Enter
+                  <svg class="arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path
+                      d="M20 6v6a3 3 0 0 1-3 3H6"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="square"
+                    />
+                    <path
+                      d="M10 11l-4 4 4 4"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="square"
+                    />
+                  </svg>
+                </span>
+              </div>
+              <div class="behavior">
+                Inserts a <em>new line.</em>
+                <span class="small">Like every other text editor on earth.</span>
+              </div>
+            </div>
+            <div class="key-row">
+              <div class="keys">
+                <span class="key-cap">⌘</span>
+                <span class="key-plus">+</span>
+                <span class="key-cap accent">Enter</span>
+              </div>
+              <div class="behavior">
+                Sends the message.
+                <span class="small">Or <kbd>Ctrl + Enter</kbd> on Windows and Linux.</span>
+              </div>
+            </div>
+            <div class="key-row">
+              <div class="keys">
+                <span class="key-cap">⇧</span>
+                <span class="key-plus">+</span>
+                <span class="key-cap">Enter</span>
+              </div>
+              <div class="behavior">
+                Unchanged.
+                <span class="small">Whatever the site does natively.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Problem ============ -->
+      <section class="problem" aria-labelledby="problem-title">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="eyebrow">The problem</p>
+            <h2 id="problem-title" class="story">
+              You meant to write a paragraph. You hit <em>Enter</em> to start a new line. ChatGPT
+              sent half a sentence.
+            </h2>
+            <p class="lede muted">
+              Every heavy AI user has been there. EnterNewLine fixes it &mdash; without changing
+              anything else about how the site works.
+            </p>
+          </div>
+
+          <div class="compare">
+            <div class="compare-card">
+              <p class="label bad">Without EnterNewLine</p>
+              <div class="input-mock">
+                I want you to help me refactor this module. Here are the things to look at:<span
+                  class="cursor"
+                ></span>
+              </div>
+              <p class="outcome">
+                <span class="pill bad">Sent</span> The colon was a promise. The list never made it
+                in.
+              </p>
+            </div>
+            <div class="compare-card">
+              <p class="label good">With EnterNewLine</p>
+              <div class="input-mock">
+                I want you to help me refactor this module. Here are the things to look at:<br />
+                1. The error handling around timeouts<br />
+                2. The retry policy on the queue<br />
+                3.&nbsp;<span class="cursor"></span>
+              </div>
+              <p class="outcome">
+                <span class="pill good">New line</span> Keep typing the list. Send with
+                <kbd>Cmd&nbsp;+&nbsp;Enter</kbd> when you&rsquo;re actually done.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ How it works ============ -->
+      <section id="how-it-works" aria-labelledby="how-title">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="eyebrow">How it works</p>
+            <h2 id="how-title">Three keys. One mode. No surprises.</h2>
+            <p class="lede muted" style="margin-top: var(--space-4)">
+              The extension intercepts keypresses on the primary chat input only. Search bars, chat
+              rename fields, and other inputs are left untouched. Paste behavior is unaffected.
+            </p>
+          </div>
+
+          <div class="bindings">
+            <div class="binding">
+              <div class="keys">
+                <span class="key-cap">Enter</span>
+              </div>
+              <div class="behavior">
+                <h3>Inserts a <em>new line</em>.</h3>
+                <p>Like every other text editor on earth.</p>
+              </div>
+            </div>
+
+            <div class="binding">
+              <div class="keys">
+                <span class="key-cap">⌘</span>
+                <span class="key-plus">+</span>
+                <span class="key-cap accent">Enter</span>
+              </div>
+              <div class="behavior">
+                <h3>Sends the message.</h3>
+                <p>
+                  <kbd>Ctrl&nbsp;+&nbsp;Enter</kbd> on Windows and Linux. Same key. Same intent. New
+                  finger.
+                </p>
+              </div>
+            </div>
+
+            <div class="binding">
+              <div class="keys">
+                <span class="key-cap">⇧</span>
+                <span class="key-plus">+</span>
+                <span class="key-cap">Enter</span>
+              </div>
+              <div class="behavior">
+                <h3>Unchanged.</h3>
+                <p>Whatever the site does natively. We don&rsquo;t touch it.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Where it works ============ -->
+      <section id="where" aria-labelledby="where-title">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="eyebrow">Where it works</p>
+            <h2 id="where-title">The five sites you&rsquo;re most likely writing on.</h2>
+            <p class="lede muted" style="margin-top: var(--space-4)">
+              Out of the box, on the sites where you&rsquo;re actually writing long prompts. Toggle
+              each one on or off per site from the popup, or manage them all from settings.
+            </p>
+          </div>
+
+          <ul class="sites">
+            <li class="site">
+              <span class="site-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M20.562 10.188c.25-.688.313-1.376.25-2.063c-.062-.687-.312-1.375-.625-2c-.562-.937-1.375-1.687-2.312-2.125c-1-.437-2.063-.562-3.125-.312c-.5-.5-1.063-.938-1.688-1.25S11.687 2 11 2a5.17 5.17 0 0 0-3 .938c-.875.624-1.5 1.5-1.813 2.5c-.75.187-1.375.5-2 .875c-.562.437-1 1-1.375 1.562c-.562.938-.75 2-.625 3.063a5.44 5.44 0 0 0 1.25 2.874a4.7 4.7 0 0 0-.25 2.063c.063.688.313 1.375.625 2c.563.938 1.375 1.688 2.313 2.125c1 .438 2.062.563 3.125.313c.5.5 1.062.937 1.687 1.25S12.312 22 13 22a5.17 5.17 0 0 0 3-.937c.875-.625 1.5-1.5 1.812-2.5a4.54 4.54 0 0 0 1.938-.875c.562-.438 1.062-.938 1.375-1.563c.562-.937.75-2 .625-3.062c-.125-1.063-.5-2.063-1.188-2.876m-7.5 10.5c-1 0-1.75-.313-2.437-.875c0 0 .062-.063.125-.063l4-2.312a.5.5 0 0 0 .25-.25a.57.57 0 0 0 .062-.313V11.25l1.688 1v4.625a3.685 3.685 0 0 1-3.688 3.813M5 17.25c-.438-.75-.625-1.625-.438-2.5c0 0 .063.063.125.063l4 2.312a.56.56 0 0 0 .313.063c.125 0 .25 0 .312-.063l4.875-2.812v1.937l-4.062 2.375A3.7 3.7 0 0 1 7.312 19c-1-.25-1.812-.875-2.312-1.75M3.937 8.563a3.8 3.8 0 0 1 1.938-1.626v4.751c0 .124 0 .25.062.312a.5.5 0 0 0 .25.25l4.875 2.813l-1.687 1l-4-2.313a3.7 3.7 0 0 1-1.75-2.25c-.25-.937-.188-2.062.312-2.937M17.75 11.75l-4.875-2.812l1.687-1l4 2.312c.625.375 1.125.875 1.438 1.5s.5 1.313.437 2.063a3.7 3.7 0 0 1-.75 1.937c-.437.563-1 1-1.687 1.25v-4.75c0-.125 0-.25-.063-.312c0 0-.062-.126-.187-.188m1.687-2.5s-.062-.062-.125-.062l-4-2.313c-.125-.062-.187-.062-.312-.062s-.25 0-.313.062L9.812 9.688V7.75l4.063-2.375c.625-.375 1.312-.5 2.062-.5c.688 0 1.375.25 2 .688c.563.437 1.063 1 1.313 1.625s.312 1.375.187 2.062m-10.5 3.5l-1.687-1V7.063c0-.688.187-1.438.562-2C8.187 4.438 8.75 4 9.375 3.688a3.37 3.37 0 0 1 2.062-.313c.688.063 1.375.375 1.938.813c0 0-.063.062-.125.062l-4 2.313a.5.5 0 0 0-.25.25c-.063.125-.063.187-.063.312zm.875-2L12 9.5l2.187 1.25v2.5L12 14.5l-2.188-1.25z"
+                  />
+                </svg>
+              </span>
+              <div class="site-name">
+                ChatGPT
+                <span class="domain">chatgpt.com</span>
+              </div>
+              <span class="status">Active</span>
+            </li>
+            <li class="site">
+              <span class="site-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="m5.92 15.3l3.94-2.2l.06-.2l-.06-.1h-.2L9 12.76l-2.24-.06l-1.96-.1l-1.9-.1l-.48-.1l-.42-.6l.04-.3l.4-.26l.58.04l1.26.1l1.9.12l1.38.08l2.04.24h.32l.04-.14l-.1-.08l-.08-.08L7.8 10.2L5.68 8.8l-1.12-.82l-.6-.4l-.3-.4l-.12-.84l.54-.6l.74.06l.18.04l.74.58l1.6 1.22L9.4 9.2l.3.24l.12-.08l.02-.06l-.14-.22L8.6 7L7.4 4.92l-.54-.86l-.14-.52c-.06-.2-.08-.4-.08-.6l.6-.84l.36-.1l.84.12l.32.28l.52 1.2l.82 1.86l1.3 2.52l.4.76l.2.68l.06.2h.14v-.1l.1-1.44l.2-1.74l.2-2.24l.06-.64l.32-.76l.6-.4l.52.22l.4.58l-.06.36L14.32 5l-.52 2.42l-.3 1.64h.18l.2-.22l.82-1.08l1.38-1.72l.6-.7l.72-.74l.46-.36h.86l.62.94l-.28.98l-.88 1.12l-.74.94l-1.06 1.42l-.64 1.14l.06.08h.14l2.4-.52l1.28-.22l1.52-.26l.7.32l.08.32l-.28.68l-1.64.4l-1.92.4l-2.86.66l-.04.02l.04.06l1.28.12l.56.04h1.36l2.52.2l.66.4l.38.54l-.06.4l-1.02.52l-1.36-.32l-3.2-.76l-1.08-.26h-.16v.08l.92.9l1.66 1.5l2.12 1.94l.1.48l-.26.4l-.28-.04l-1.84-1.4l-.72-.6l-1.6-1.36h-.1v.14l.36.54l1.96 2.94l.1.9l-.14.28l-.52.2l-.54-.12l-1.16-1.6l-1.2-1.8l-.94-1.64l-.1.08l-.58 6.04l-.26.3l-.6.24l-.5-.4l-.28-.6l.28-1.24l.32-1.6l.26-1.28l.24-1.58l.14-.52v-.04h-.14l-1.2 1.66l-1.8 2.46l-1.44 1.52l-.34.14l-.6-.3l.06-.56l.32-.46l2-2.56l1.2-1.58l.8-.92l-.02-.1h-.06l-5.28 3.44l-.94.12l-.4-.4l.04-.6l.2-.2l1.6-1.1z"
+                  />
+                </svg>
+              </span>
+              <div class="site-name">
+                Claude
+                <span class="domain">claude.ai</span>
+              </div>
+              <span class="status">Active</span>
+            </li>
+            <li class="site">
+              <span class="site-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M24 12.024c-6.437.388-11.59 5.539-11.977 11.976h-.047C11.588 17.563 6.436 12.412 0 12.024v-.047C6.437 11.588 11.588 6.437 11.976 0h.047c.388 6.437 5.54 11.588 11.977 11.977z"
+                  />
+                </svg>
+              </span>
+              <div class="site-name">
+                Gemini
+                <span class="domain">gemini.google.com</span>
+              </div>
+              <span class="status">Active</span>
+            </li>
+            <li class="site">
+              <span class="site-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M11.999 3.201C5.372 3.201 0 8.528 0 15.101V20.8h2.212v-.568c0-2.666 2.178-4.827 4.866-4.827s4.866 2.16 4.866 4.827v.568h2.212v-.568c0-3.877-3.17-7.019-7.078-7.019A7.1 7.1 0 0 0 2.992 14.5a7.36 7.36 0 0 1 6.568-4.016c4.057 0 7.347 3.264 7.347 7.287V20.8h2.212v-3.03c0-5.235-4.28-9.481-9.56-9.481a9.56 9.56 0 0 0-6.217 2.28A9.8 9.8 0 0 1 12 5.393c5.406 0 9.788 4.346 9.788 9.707v5.7H24v-5.7c-.001-6.573-5.373-11.9-12.001-11.9Z"
+                  />
+                </svg>
+              </span>
+              <div class="site-name">
+                Perplexity
+                <span class="domain">perplexity.ai</span>
+              </div>
+              <span class="status">Active</span>
+            </li>
+            <li class="site">
+              <span class="site-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="m5.735 2l5.695 5.247V2.012h1.109v5.259L18.259 2v5.983h2.349v8.629h-2.342v5.327l-5.727-5.032v5.09h-1.11V16.99L5.742 22v-5.388H3.393v-8.63h2.342zm4.86 7.078H4.5v6.439h1.24v-2.031zM6.85 13.972v5.585l4.58-4.034V9.81zm5.72 1.497l4.588 4.03v-2.887h-.006v-2.646l-4.582-4.16zm5.696.048H19.5v-6.44h-6.047l4.814 4.363zm-1.115-7.534V4.519l-3.76 3.464zm-6.548 0l-3.76-3.464v3.464z"
+                  />
+                </svg>
+              </span>
+              <div class="site-name">
+                NotebookLM
+                <span class="domain">notebooklm.google.com</span>
+              </div>
+              <span class="status">Active</span>
+            </li>
+          </ul>
+
+          <p class="small" style="margin-top: var(--space-5); max-width: 56ch">
+            Custom sites are intentionally out of scope so the extension can keep a narrow,
+            review-friendly host-permission footprint. New defaults arrive through extension updates
+            &mdash; existing user toggles are respected.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============ Surfaces ============ -->
+      <section class="surfaces" aria-labelledby="surfaces-title">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="eyebrow">The popup &amp; settings</p>
+            <h2 id="surfaces-title">A toolbar utility, not an app.</h2>
+            <p class="lede muted" style="margin-top: var(--space-4)">
+              Click the icon, see what&rsquo;s on, count what you&rsquo;ve saved, move on. The
+              numbers stay in your browser. They&rsquo;re for you, not us.
+            </p>
+          </div>
+
+          <div class="grid">
+            <!-- Popup mock -->
+            <div class="preview" aria-label="Popup preview">
+              <div class="preview-frame">
+                <div class="preview-head">
+                  <span class="title"
+                    ><span class="dot" aria-hidden="true"></span>EnterNewLine</span
+                  >
+                  <span class="label">On this site</span>
+                </div>
+
+                <div class="row-toggle">
+                  <span><span class="domain">chatgpt.com</span><span class="state">Active</span></span>
+                  <span class="toggle" aria-hidden="true"></span>
+                </div>
+
+                <div class="stats">
+                  <div>
+                    <p class="col-label">This site</p>
+                    <div class="stat">
+                      <div class="num">1,247</div>
+                      <div class="lbl">Newlines saved</div>
+                    </div>
+                    <div class="stat">
+                      <div class="num">312</div>
+                      <div class="lbl">Messages sent</div>
+                    </div>
+                  </div>
+                  <div>
+                    <p class="col-label">Global</p>
+                    <div class="stat">
+                      <div class="num">3,508</div>
+                      <div class="lbl">Newlines saved</div>
+                    </div>
+                    <div class="stat">
+                      <div class="num">874</div>
+                      <div class="lbl">Messages sent</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="footer">All settings &rarr;</div>
+              </div>
+            </div>
+
+            <!-- Copy column with settings preview -->
+            <div class="copy">
+              <h3>From the popup</h3>
+              <ul>
+                <li>Whether the extension is active on the current site.</li>
+                <li>Newlines saved on this site, and across every site.</li>
+                <li>Messages sent with <kbd>Cmd&nbsp;+&nbsp;Enter</kbd>, this site and globally.</li>
+              </ul>
+
+              <h3>From settings</h3>
+              <ul>
+                <li>Toggle each supported site on or off.</li>
+                <li>Export your settings as a JSON file.</li>
+                <li>Import settings from a JSON file &mdash; handy when you switch machines.</li>
+              </ul>
+
+              <p class="small" style="margin-top: var(--space-5); max-width: 56ch">
+                If you&rsquo;re signed into Chrome, your enabled/disabled sites sync across your own
+                devices automatically. Export/import is for the cases where sync isn&rsquo;t enough
+                &mdash; switching to Firefox, sharing a config with a coworker, that kind of thing.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Privacy ============ -->
+      <section id="privacy" class="privacy" aria-labelledby="privacy-title">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="eyebrow">What it doesn&rsquo;t do</p>
+            <h2 id="privacy-title">Nothing leaves your browser.</h2>
+            <p class="lede muted" style="margin-top: var(--space-4)">
+              No accounts, no analytics, no &ldquo;Pro&rdquo; tier. The four lines below are not a
+              roadmap. They are a permanent commitment, and the source is open so you can verify
+              every word.
+            </p>
+          </div>
+
+          <div class="doesnt">
+            <div class="doesnt-item">
+              <div class="no">No</div>
+              <h3>Data collection.</h3>
+              <p>
+                EnterNewLine collects nothing. Not your prompts, not your sites, not your stats. The
+                counters in the popup live in <code>storage.sync</code> on your machine.
+              </p>
+            </div>
+            <div class="doesnt-item">
+              <div class="no">No</div>
+              <h3>Network requests.</h3>
+              <p>
+                The extension never contacts a server. Period. There&rsquo;s no telemetry endpoint
+                because there&rsquo;s no telemetry. Use it on a plane.
+              </p>
+            </div>
+            <div class="doesnt-item">
+              <div class="no">No</div>
+              <h3>Accounts or sign-in.</h3>
+              <p>
+                Install it. It works. Settings sync through the browser&rsquo;s own account &mdash;
+                there is no EnterNewLine account, and there never will be.
+              </p>
+            </div>
+            <div class="doesnt-item">
+              <div class="no">No</div>
+              <h3>Ads, upsells, or a Pro tier.</h3>
+              <p>
+                Free under the MIT license, fully auditable on
+                <a href="https://github.com/primaprashant/enter-new-line" rel="noopener">GitHub</a>.
+                Read every line of the code.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ FAQ ============ -->
+      <section id="faq" class="faq" aria-labelledby="faq-title">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="eyebrow">Frequently asked</p>
+            <h2 id="faq-title">A few honest answers.</h2>
+          </div>
+
+          <div class="item">
+            <details>
+              <summary>
+                <h3>Will this break <kbd>Shift&nbsp;+&nbsp;Enter</kbd>?</h3>
+                <span class="marker" aria-hidden="true"></span>
+              </summary>
+              <div class="answer">
+                <p>
+                  No. <kbd>Shift&nbsp;+&nbsp;Enter</kbd> is left exactly the way the site handles it
+                  natively &mdash; we never intercept it. Most sites already use it for a new line,
+                  so your old habits keep working in parallel with the new ones.
+                </p>
+              </div>
+            </details>
+          </div>
+
+          <div class="item">
+            <details>
+              <summary>
+                <h3>Why not just train myself to use <kbd>Shift&nbsp;+&nbsp;Enter</kbd>?</h3>
+                <span class="marker" aria-hidden="true"></span>
+              </summary>
+              <div class="answer">
+                <p>
+                  You can. Many people have. But muscle memory built across thirty years of email,
+                  text editors, and IDEs doesn&rsquo;t care about your conscious intentions, and the
+                  cost of being wrong is sending a half-finished prompt to a model that will
+                  cheerfully answer it.
+                </p>
+                <p>
+                  EnterNewLine flips the default so the wrong key becomes the safe one.
+                </p>
+              </div>
+            </details>
+          </div>
+
+          <div class="item">
+            <details>
+              <summary>
+                <h3>Why these five sites and not others?</h3>
+                <span class="marker" aria-hidden="true"></span>
+              </summary>
+              <div class="answer">
+                <p>
+                  ChatGPT, Claude, Gemini, Perplexity, and NotebookLM cover the overwhelming
+                  majority of long-form AI chat usage. Shipping with a fixed list keeps the
+                  extension&rsquo;s host permissions narrow and easy for browser stores to review,
+                  which keeps the install prompt boring &mdash; the way a keyboard utility should
+                  be.
+                </p>
+                <p>
+                  New defaults are added through extension updates. Custom user-added sites are
+                  intentionally out of scope.
+                </p>
+              </div>
+            </details>
+          </div>
+
+          <div class="item">
+            <details>
+              <summary>
+                <h3>What happens to other inputs on the page?</h3>
+                <span class="marker" aria-hidden="true"></span>
+              </summary>
+              <div class="answer">
+                <p>
+                  The content script targets the primary chat/prompt input only &mdash; textarea,
+                  contenteditable, ProseMirror, the usual suspects. Search bars, chat rename
+                  fields, account inputs, and everything else are completely untouched. Paste
+                  behavior is unaffected too.
+                </p>
+              </div>
+            </details>
+          </div>
+
+          <div class="item">
+            <details>
+              <summary>
+                <h3>Where are my settings stored?</h3>
+                <span class="marker" aria-hidden="true"></span>
+              </summary>
+              <div class="answer">
+                <p>
+                  In your browser&rsquo;s <code>storage.sync</code>. If you&rsquo;re signed into
+                  Chrome, the same toggles follow you across your own devices. If you need to move
+                  them somewhere sync can&rsquo;t reach &mdash; a different browser, a different
+                  account, a coworker&rsquo;s machine &mdash; export them as a JSON file from
+                  settings and import on the other side.
+                </p>
+              </div>
+            </details>
+          </div>
+
+          <div class="item">
+            <details>
+              <summary>
+                <h3>Is it really open source?</h3>
+                <span class="marker" aria-hidden="true"></span>
+              </summary>
+              <div class="answer">
+                <p>
+                  Yes &mdash; MIT licensed, every line on
+                  <a href="https://github.com/primaprashant/enter-new-line" rel="noopener"
+                    >github.com/primaprashant/enter-new-line</a>. Bug reports, feature requests,
+                  and pull requests are welcome.
+                </p>
+              </div>
+            </details>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============ Closing CTA ============ -->
+      <section class="closer" aria-labelledby="closer-title">
+        <div class="wrap">
+          <h2 id="closer-title">Enter inserts a new line, Cmd+Enter sends.</h2>
+          <p class="lede muted">
+            Browser extension that works on ChatGPT, Claude, Gemini & more.
+          </p>
+          <div class="ctas">
+            <a
+              class="btn btn-primary"
+              href="https://chromewebstore.google.com/detail/enternewline-%E2%80%94-bind-enter/ingflmkenbhkjhbhcphjjdhpmnnagphp"
+              rel="noopener"
+            >
+              <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 0C8.21 0 4.831 1.757 2.632 4.501l3.953 6.848A5.454 5.454 0 0 1 12 6.545h10.691A12 12 0 0 0 12 0zM1.931 5.47A11.943 11.943 0 0 0 0 12c0 6.012 4.42 10.991 10.189 11.864l3.953-6.847a5.45 5.45 0 0 1-6.865-2.29zm13.342 2.166a5.446 5.446 0 0 1 1.45 7.09l.002.001h-.002l-5.344 9.257c.206.01.413.016.621.016 6.627 0 12-5.373 12-12 0-1.54-.29-3.011-.818-4.364zM12 16.364a4.364 4.364 0 1 1 0-8.728 4.364 4.364 0 0 1 0 8.728Z"
+                />
+              </svg>
+              Add to Chrome
+            </a>
+            <button class="btn btn-secondary" type="button" aria-disabled="true" disabled>
+              <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M8.824 7.287c.008 0 .004 0 0 0zm-2.8-1.4c.006 0 .003 0 0 0zm16.754 2.161c-.505-1.215-1.53-2.528-2.333-2.943.654 1.283 1.033 2.57 1.177 3.53l.002.02c-1.314-3.278-3.544-4.6-5.366-7.477-.091-.147-.184-.292-.273-.446a3.545 3.545 0 01-.13-.24 2.118 2.118 0 01-.172-.46.03.03 0 00-.027-.03.038.038 0 00-.021 0l-.006.001a.037.037 0 00-.01.005L15.624 0c-2.585 1.515-3.657 4.168-3.932 5.856a6.197 6.197 0 00-2.305.587.297.297 0 00-.147.37c.057.162.24.24.396.17a5.622 5.622 0 012.008-.523l.067-.005a5.847 5.847 0 011.957.222l.095.03a5.816 5.816 0 01.616.228c.08.036.16.073.238.112l.107.055a5.835 5.835 0 01.368.211 5.953 5.953 0 012.034 2.104c-.62-.437-1.733-.868-2.803-.681 4.183 2.09 3.06 9.292-2.737 9.02a5.164 5.164 0 01-1.513-.292 4.42 4.42 0 01-.538-.232c-1.42-.735-2.593-2.121-2.74-3.806 0 0 .537-2 3.845-2 .357 0 1.38-.998 1.398-1.287-.005-.095-2.029-.9-2.817-1.677-.422-.416-.622-.616-.8-.767a3.47 3.47 0 00-.301-.227 5.388 5.388 0 01-.032-2.842c-1.195.544-2.124 1.403-2.8 2.163h-.006c-.46-.584-.428-2.51-.402-2.913-.006-.025-.343.176-.389.206-.406.29-.787.616-1.136.974-.397.403-.76.839-1.085 1.303a9.816 9.816 0 00-1.562 3.52c-.003.013-.11.487-.19 1.073-.013.09-.026.181-.037.272a7.8 7.8 0 00-.069.667l-.002.034-.023.387-.001.06C.386 18.795 5.593 24 12.016 24c5.752 0 10.527-4.176 11.463-9.661.02-.149.035-.298.052-.448.232-1.994-.025-4.09-.753-5.844z"
+                />
+              </svg>
+              Firefox &mdash; coming soon
+            </button>
+            <a
+              class="btn btn-ghost"
+              href="https://github.com/primaprashant/enter-new-line"
+              target="_blank"
+              rel="noopener"
+            >
+              <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
+                />
+              </svg>
+              Read the source
+              <svg class="icon-out" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M7 17L17 7M17 7H9M17 7V15"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                  stroke-linejoin="miter"
+                />
+              </svg>
+            </a>
+          </div>
+          <p class="free-line">
+            Free<span class="sep">·</span>Open source<span class="sep">·</span>No tracking ever
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <!-- ============ Footer ============ -->
+    <footer>
+      <div class="wrap">
+        <div class="row">
+          <div class="brand">
+            <a href="#top" class="wordmark" aria-label="EnterNewLine — top">
+              <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M20 6v6a3 3 0 0 1-3 3H6"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                />
+                <path
+                  d="M10 11l-4 4 4 4"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                />
+              </svg>
+              EnterNewLine
+            </a>
+            <p class="tagline">Enter for a new line. Cmd&nbsp;+&nbsp;Enter to send.</p>
+          </div>
+
+          <div class="end">
+            <div class="links">
+              <a
+                href="https://chromewebstore.google.com/detail/enternewline-%E2%80%94-bind-enter/ingflmkenbhkjhbhcphjjdhpmnnagphp"
+                rel="noopener"
+                >Chrome Web Store</a
+              >
+              <!-- TODO: replace with the AMO listing URL once Firefox is live. -->
+              <a href="#" rel="noopener" aria-disabled="true">Firefox Add-ons</a>
+              <a href="https://github.com/primaprashant/enter-new-line" rel="noopener">GitHub</a>
+              <a
+                href="https://github.com/primaprashant/enter-new-line/blob/main/PRIVACY.md"
+                rel="noopener"
+                >Privacy</a
+              >
+              <a
+                href="https://github.com/primaprashant/enter-new-line/blob/main/LICENSE"
+                rel="noopener"
+                >License</a
+              >
+              <a
+                href="https://github.com/primaprashant/enter-new-line/issues"
+                rel="noopener"
+                >Issues</a
+              >
+            </div>
+            <p class="signature">
+              Made by
+              <a href="https://anandprashant.com/about" rel="noopener">Prashant Anand</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
