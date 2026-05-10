@@ -15,7 +15,7 @@ If you write long prompts, you've hit the bug: you reach for a paragraph break a
 
 ## Install
 
-- **Chrome Web Store** — _coming soon_
+- **Chrome Web Store** — https://chromewebstore.google.com/detail/enternewline-%E2%80%94-bind-enter/ingflmkenbhkjhbhcphjjdhpmnnagphp
 - **Firefox Add-ons** — _coming soon_
 - **From source** — see [Development](#development)
 
